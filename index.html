@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>音乐剧灵魂测试 ✦ Musical Soul</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@300;400;700&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Ma+Shan+Zheng&family=Great+Vibes&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root {
+  --gold: #d4af37;
+  --gold-light: #f0d060;
+  --deep-purple: #1a0a2e;
+  --dark: #0d0d1a;
+  --darker: #08080f;
+  --crimson: #8b0000;
+  --rose: #c0556a;
+  --teal: #2a7c6f;
+  --text-light: #f0e8d0;
+  --text-dim: #9a8870;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--darker);
+  color: var(--text-light);
+  font-family: 'Noto Serif SC', 'Georgia', serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(212,175,55,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(139,0,0,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(26,10,46,0.8) 0%, transparent 100%);
+  pointer-events: none; z-index: 0;
+}
+#stars { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.star {
+  position: absolute; background: #fff; border-radius: 50%;
+  animation: twinkle var(--dur, 3s) ease-in-out infinite;
+}
+@keyframes twinkle {
+  0%,100% { opacity: 0.1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.3); }
+}
+.screen {
+  position: relative; z-index: 1;
+  min-height: 100vh; width: 100%;
+  display: none; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 2rem;
+  animation: fadeIn 0.6s ease;
+}
+.screen.active { display: flex; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── INTRO ── */
+#intro { text-align: center; }
+.curtain-left, .curtain-right {
+  position: fixed; top: 0; width: 48%; height: 100vh;
+  background: linear-gradient(to bottom, #1a0010, #3d0020, #1a0010);
+  z-index: 10; transition: transform 1.2s cubic-bezier(0.77,0,0.18,1);
+}
+.curtain-left { left: 0; transform: translateX(-72%); }
+.curtain-right { right: 0; transform: translateX(72%); }
+.curtain-left.open { transform: translateX(-100%); }
+.curtain-right.open { transform: translateX(100%); }
+.curtain-left::after, .curtain-right::after {
+  content: '';
+  position: absolute; top: 0; bottom: 0; width: 12px;
+  background: repeating-linear-gradient(to bottom, rgba(212,175,55,0.3) 0px, rgba(212,175,55,0.1) 20px, rgba(212,175,55,0.3) 40px);
+}
+.curtain-left::after { right: 0; }
+.curtain-right::after { left: 0; }
+.curtain-fringe {
+  position: fixed; top: 0; left: 0; right: 0; height: 60px;
+  background: linear-gradient(to right, #2a0015, #4a0025, #3a001a, #4a0025, #2a0015);
+  z-index: 11; border-bottom: 3px solid var(--gold);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: transform 0.8s ease;
+}
+.curtain-fringe.hidden { transform: translateY(-100%); }
+.fringe-drop {
+  width: 3px; height: 40px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  border-radius: 2px;
+}
+.logo-area { margin-bottom: 2rem; }
+.logo-icon { font-size: 4rem; display: block; margin-bottom: 0.5rem; filter: drop-shadow(0 0 20px rgba(212,175,55,0.5)); }
+.site-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.2rem, 6vw, 4rem); font-style: italic;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold), #b8860b);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  line-height: 1.2;
+}
+.site-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem; letter-spacing: 0.3em;
+  color: var(--text-dim); margin-top: 0.5rem; text-transform: uppercase;
+}
+.divider { display: flex; align-items: center; gap: 1rem; margin: 1.5rem auto; max-width: 400px; }
+.divider-line { flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); }
+.divider-icon { color: var(--gold); font-size: 1rem; }
+.intro-desc { max-width: 560px; margin: 0 auto 2rem; font-size: 1.05rem; line-height: 1.9; color: #c8b89a; }
+.stat-row { display: flex; gap: 2rem; justify-content: center; margin: 1.5rem 0 2.5rem; flex-wrap: wrap; }
+.stat-item { text-align: center; }
+.stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--gold); display: block; }
+.stat-label { font-size: 0.78rem; color: var(--text-dim); letter-spacing: 0.1em; }
+.btn-start {
+  position: relative;
+  background: linear-gradient(135deg, #8b0000, #c0191f, #8b0000);
+  border: 2px solid var(--gold); color: var(--gold-light);
+  font-family: 'Playfair Display', serif; font-size: 1.25rem; font-style: italic;
+  padding: 1rem 3rem; border-radius: 4px; cursor: pointer;
+  letter-spacing: 0.1em; transition: all 0.3s ease; overflow: hidden;
+}
+.btn-start::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, transparent, rgba(212,175,55,0.15), transparent);
+  transform: translateX(-100%); transition: transform 0.5s ease;
+}
+.btn-start:hover::before { transform: translateX(100%); }
+.btn-start:hover { box-shadow: 0 0 30px rgba(212,175,55,0.4); transform: translateY(-2px); }
+
+/* ── QUIZ ── */
+#quiz { padding: 5rem 1.5rem 2rem; justify-content: flex-start; }
+.quiz-header {
+  position: fixed; top: 0; left: 0; right: 0;
+  background: rgba(8,8,15,0.95); backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(212,175,55,0.2);
+  padding: 0.8rem 2rem; z-index: 100;
+  display: flex; align-items: center; gap: 1.5rem;
+}
+.quiz-logo { font-size: 1.2rem; white-space: nowrap; color: var(--gold); font-family: 'Playfair Display', serif; font-style: italic; }
+.progress-bar-wrap { flex: 1; }
+.progress-label { font-size: 0.7rem; color: var(--text-dim); margin-bottom: 4px; letter-spacing: 0.1em; }
+.progress-track { height: 4px; background: rgba(212,175,55,0.15); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(to right, var(--crimson), var(--gold)); border-radius: 2px; transition: width 0.5s ease; }
+.q-counter { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 0.9rem; white-space: nowrap; }
+.question-card { max-width: 680px; width: 100%; margin-top: 1rem; animation: slideIn 0.5s ease; }
+@keyframes slideIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+.q-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.85rem; letter-spacing: 0.3em;
+  color: var(--gold); opacity: 0.7; margin-bottom: 1rem; text-transform: uppercase;
+}
+.q-text {
+  font-family: 'Noto Serif SC', serif;
+  font-size: clamp(1.1rem, 3vw, 1.35rem); line-height: 1.7; color: var(--text-light);
+  margin-bottom: 2rem; padding-bottom: 1.2rem;
+  border-bottom: 1px solid rgba(212,175,55,0.15);
+}
+.options { display: flex; flex-direction: column; gap: 0.9rem; }
+.option-btn {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(212,175,55,0.2); color: var(--text-light);
+  padding: 1rem 1.4rem; border-radius: 6px; cursor: pointer;
+  text-align: left; font-family: 'Noto Serif SC', serif;
+  font-size: 0.95rem; line-height: 1.6;
+  transition: all 0.25s ease; display: flex; align-items: flex-start; gap: 0.8rem;
+  position: relative; overflow: hidden;
+}
+.option-btn::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--gold); transform: scaleY(0); transition: transform 0.3s ease;
+}
+.option-btn:hover { background: rgba(212,175,55,0.08); border-color: rgba(212,175,55,0.5); transform: translateX(4px); }
+.option-btn:hover::before { transform: scaleY(1); }
+.option-btn.selected { background: rgba(212,175,55,0.12); border-color: var(--gold); color: var(--gold-light); }
+.option-btn.selected::before { transform: scaleY(1); }
+.option-letter { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--gold); font-weight: 700; min-width: 24px; opacity: 0.8; }
+.option-text { flex: 1; }
+.quiz-nav { margin-top: 2rem; display: flex; justify-content: space-between; align-items: center; }
+.btn-prev {
+  background: transparent; border: 1px solid rgba(212,175,55,0.35); color: var(--text-dim);
+  padding: 0.7rem 1.5rem; border-radius: 4px; cursor: pointer;
+  font-family: 'Playfair Display', serif; font-size: 0.9rem; font-style: italic;
+  letter-spacing: 0.05em; transition: all 0.3s ease; opacity: 0; pointer-events: none;
+}
+.btn-prev.visible { opacity: 1; pointer-events: auto; }
+.btn-prev:hover { border-color: var(--gold); color: var(--gold); }
+.btn-next {
+  background: transparent; border: 1px solid var(--gold); color: var(--gold);
+  padding: 0.7rem 2rem; border-radius: 4px; cursor: pointer;
+  font-family: 'Playfair Display', serif; font-size: 0.95rem; font-style: italic;
+  letter-spacing: 0.1em; transition: all 0.3s ease; opacity: 0; pointer-events: none;
+}
+.btn-next.visible { opacity: 1; pointer-events: auto; }
+.btn-next:hover { background: rgba(212,175,55,0.1); box-shadow: 0 0 20px rgba(212,175,55,0.2); }
+
+/* ── LOADING ── */
+#loading { text-align: center; }
+.loading-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-style: italic; color: var(--gold); margin-bottom: 2rem; }
+.crystal-ball { font-size: 5rem; animation: float 2s ease-in-out infinite; display: block; margin: 0 auto 2rem; filter: drop-shadow(0 0 20px rgba(212,175,55,0.6)); }
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+.loading-text { color: var(--text-dim); font-size: 0.9rem; letter-spacing: 0.2em; animation: pulse 1.5s ease infinite; }
+@keyframes pulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+/* ── RESULT ── */
+#result { padding: 2rem 1.5rem; }
+.result-card {
+  max-width: 700px; width: 100%;
+  background: rgba(10,8,20,0.9);
+  border: 1px solid rgba(212,175,55,0.3); border-radius: 12px; overflow: hidden;
+  box-shadow: 0 0 60px rgba(212,175,55,0.1), 0 0 120px rgba(139,0,0,0.1);
+  animation: revealCard 0.8s ease;
+}
+@keyframes revealCard { from { opacity: 0; transform: scale(0.9) translateY(30px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+.result-header {
+  padding: 2.5rem 2.5rem 2rem; border-bottom: 1px solid rgba(212,175,55,0.15);
+  text-align: center; position: relative; overflow: hidden;
+}
+.result-header::before { content: ''; position: absolute; inset: 0; background: var(--char-gradient); opacity: 0.4; }
+.result-header > * { position: relative; z-index: 1; }
+.result-you-are { font-family: 'Cormorant Garamond', serif; font-size: 0.85rem; letter-spacing: 0.4em; color: var(--gold); opacity: 0.8; text-transform: uppercase; margin-bottom: 0.5rem; }
+/* calligraphy replaces emoji */
+.char-calligraphy { margin: 1rem 0; text-align: center; }
+.char-calli-zh {
+  font-family: 'Ma Shan Zheng', '华文行楷', 'STKaiti', cursive;
+  font-size: clamp(2.6rem, 8vw, 3.8rem);
+  background: linear-gradient(135deg, #f0d060, #d4af37, #b8860b);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  display: block; line-height: 1.25;
+  filter: drop-shadow(0 0 12px rgba(212,175,55,0.35));
+}
+.char-calli-en {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(1.3rem, 4vw, 1.8rem);
+  color: rgba(212,175,55,0.55);
+  display: block; margin-top: -0.2rem;
+}
+.result-char-name {
+  font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 5vw, 2.8rem);
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  line-height: 1.2; margin-bottom: 0.4rem;
+}
+.result-musical { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-style: italic; color: #c8b89a; }
+.result-body { padding: 2rem 2.5rem; }
+.song-box {
+  background: rgba(212,175,55,0.06); border: 1px solid rgba(212,175,55,0.2);
+  border-radius: 8px; padding: 1.2rem 1.5rem; margin-bottom: 1.8rem;
+  display: flex; align-items: center; gap: 1rem;
+}
+.song-icon { font-size: 1.8rem; }
+.song-label { font-size: 0.7rem; letter-spacing: 0.2em; color: var(--text-dim); text-transform: uppercase; margin-bottom: 0.2rem; }
+.song-name { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-style: italic; color: var(--gold-light); }
+.song-name-cn { font-size: 0.85rem; color: var(--text-dim); margin-top: 0.1rem; }
+.result-desc { font-size: 0.98rem; line-height: 1.9; color: #c8b89a; margin-bottom: 1.8rem; }
+.result-quote {
+  font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-style: italic;
+  color: var(--gold); opacity: 0.8; border-left: 3px solid var(--gold);
+  padding-left: 1rem; margin-bottom: 2rem; line-height: 1.7;
+}
+.traits-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.trait-tag {
+  background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.3);
+  color: var(--gold-light); padding: 0.3rem 0.8rem; border-radius: 20px;
+  font-size: 0.78rem; letter-spacing: 0.05em;
+}
+.result-footer {
+  border-top: 1px solid rgba(212,175,55,0.15); padding: 1.5rem 2.5rem;
+  display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+}
+.btn-retry {
+  background: transparent; border: 1px solid var(--gold); color: var(--gold);
+  padding: 0.7rem 1.8rem; border-radius: 4px; cursor: pointer;
+  font-family: 'Playfair Display', serif; font-size: 0.95rem; font-style: italic;
+  transition: all 0.3s ease;
+}
+.btn-retry:hover { background: rgba(212,175,55,0.1); }
+.btn-share {
+  background: linear-gradient(135deg, #8b0000, #c0191f); border: 1px solid var(--gold);
+  color: var(--gold-light); padding: 0.7rem 1.8rem; border-radius: 4px; cursor: pointer;
+  font-family: 'Playfair Display', serif; font-size: 0.95rem; font-style: italic;
+  transition: all 0.3s ease;
+}
+.btn-share:hover { box-shadow: 0 0 20px rgba(212,175,55,0.3); transform: translateY(-1px); }
+.spotlight {
+  position: fixed; top: -50%; left: 50%; transform: translateX(-50%);
+  width: 300px; height: 150vh;
+  background: radial-gradient(ellipse at top, rgba(212,175,55,0.04) 0%, transparent 60%);
+  pointer-events: none; z-index: 0;
+}
+.toast {
+  position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px);
+  background: rgba(10,8,20,0.95); border: 1px solid var(--gold);
+  color: var(--gold-light); padding: 0.8rem 1.5rem; border-radius: 4px; font-size: 0.9rem;
+  transition: transform 0.4s ease; z-index: 999;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+/* ── RADAR CHART ── */
+.radar-section { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(212,175,55,0.1); }
+.radar-title {
+  font-family: 'Cormorant Garamond', serif; font-size: 0.78rem;
+  letter-spacing: 0.35em; color: var(--text-dim); text-transform: uppercase;
+  text-align: center; margin-bottom: 1rem;
+}
+.radar-title em { font-style: italic; color: var(--gold); opacity: 0.7; }
+.radar-container { display: flex; justify-content: center; padding: 24px; overflow: visible; }
+
+/* ── SHARE MODAL ── */
+.share-modal {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(0,0,0,0.85); backdrop-filter: blur(6px);
+  display: none; align-items: center; justify-content: center;
+  padding: 1rem;
+}
+.share-modal.visible { display: flex; }
+.share-modal-inner {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 1rem; max-height: 95vh;
+}
+.share-card-wrap {
+  overflow-y: auto; max-height: 75vh;
+  border: 1px solid rgba(212,175,55,0.3); border-radius: 8px;
+  scrollbar-width: thin; scrollbar-color: rgba(212,175,55,0.3) transparent;
+}
+.share-actions { display: flex; gap: 0.8rem; }
+.btn-dl {
+  background: linear-gradient(135deg, #8b0000, #c0191f); border: 1px solid var(--gold);
+  color: var(--gold-light); padding: 0.6rem 1.5rem; border-radius: 4px; cursor: pointer;
+  font-family: 'Playfair Display', serif; font-size: 0.9rem; font-style: italic;
+  transition: all 0.3s ease;
+}
+.btn-dl:hover { box-shadow: 0 0 20px rgba(212,175,55,0.3); }
+.btn-dl:disabled { opacity: 0.5; cursor: wait; }
+.btn-close-modal {
+  background: transparent; border: 1px solid rgba(212,175,55,0.4); color: var(--text-dim);
+  padding: 0.6rem 1.2rem; border-radius: 4px; cursor: pointer;
+  font-family: 'Playfair Display', serif; font-size: 0.9rem; font-style: italic;
+}
+.share-hint { font-size: 0.72rem; color: var(--text-dim); letter-spacing: 0.05em; }
+
+@media (max-width: 600px) {
+  .result-body { padding: 1.5rem; }
+  .result-header { padding: 2rem 1.5rem 1.5rem; }
+  .result-footer { padding: 1rem 1.5rem; }
+  .quiz-logo { display: none; }
+  .share-card-wrap { max-height: 65vh; }
+}
+</style>
+</head>
+<body>
+<div id="stars"></div>
+<div class="spotlight"></div>
+<div class="curtain-fringe" id="curtainFringe">
+  <div class="fringe-drop"></div><div class="fringe-drop"></div><div class="fringe-drop"></div>
+  <div class="fringe-drop"></div><div class="fringe-drop"></div><div class="fringe-drop"></div>
+  <div class="fringe-drop"></div><div class="fringe-drop"></div><div class="fringe-drop"></div>
+  <div class="fringe-drop"></div><div class="fringe-drop"></div><div class="fringe-drop"></div>
+  <div class="fringe-drop"></div><div class="fringe-drop"></div><div class="fringe-drop"></div>
+</div>
+<div class="curtain-left" id="curtainL"></div>
+<div class="curtain-right" id="curtainR"></div>
+
+<!-- SCREEN 1: INTRO -->
+<div class="screen active" id="intro">
+  <div class="logo-area">
+    <span class="logo-icon">🎭</span>
+    <h1 class="site-title">Musical Soul</h1>
+    <p class="site-subtitle">音乐剧灵魂测试</p>
+  </div>
+  <div class="divider">
+    <div class="divider-line"></div><span class="divider-icon">✦</span><div class="divider-line"></div>
+  </div>
+  <p class="intro-desc">
+    每一部音乐剧里，都住着一个可能的你。<br>
+    25道题，揭开你内心深处的音乐剧灵魂——<br>
+    你是谁？你的本命曲目是哪一首？
+  </p>
+  <div class="stat-row">
+    <div class="stat-item"><span class="stat-num">25</span><span class="stat-label">道题目</span></div>
+    <div class="stat-item"><span class="stat-num">48</span><span class="stat-label">种结果</span></div>
+    <div class="stat-item"><span class="stat-num">5 min</span><span class="stat-label">完成时间</span></div>
+  </div>
+  <button class="btn-start" onclick="startQuiz()">✦ 开幕 · Begin ✦</button>
+</div>
+
+<!-- SCREEN 2: QUIZ -->
+<div class="screen" id="quiz">
+  <div class="quiz-header">
+    <div class="quiz-logo">🎭 Musical Soul</div>
+    <div class="progress-bar-wrap">
+      <div class="progress-label">幕布拉开 · <span id="progressPct">0</span>%</div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+    <div class="q-counter">第 <span id="qNum">1</span> / <span id="qTotal">25</span> 题</div>
+  </div>
+  <div class="question-card" id="questionCard">
+    <div class="q-number" id="qNumber">幕 · 一</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsContainer"></div>
+    <div class="quiz-nav">
+      <button class="btn-prev" id="btnPrev" onclick="prevQuestion()">← 上一幕</button>
+      <button class="btn-next" id="btnNext" onclick="nextQuestion()">下一幕 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 3: LOADING -->
+<div class="screen" id="loading">
+  <span class="crystal-ball">🔮</span>
+  <div class="loading-title">命运之书正在翻阅……</div>
+  <div class="loading-text">✦ &nbsp; INTERMISSION &nbsp; ✦</div>
+</div>
+
+<!-- SCREEN 4: RESULT -->
+<div class="screen" id="result">
+  <div class="result-card" id="resultCard">
+    <div class="result-header" id="resultHeader">
+      <div class="result-you-are">你的音乐剧灵魂是</div>
+      <div class="char-calligraphy">
+        <span class="char-calli-zh" id="resCalliZH"></span>
+        <span class="char-calli-en" id="resCalliEN"></span>
+      </div>
+      <div class="result-char-name" id="resName"></div>
+      <div class="result-musical" id="resMusical"></div>
+    </div>
+    <div class="result-body">
+      <div class="song-box">
+        <div class="song-icon">🎵</div>
+        <div class="song-info">
+          <div class="song-label">本命曲目 · Signature Song</div>
+          <div class="song-name" id="resSong"></div>
+          <div class="song-name-cn" id="resSongCN"></div>
+        </div>
+      </div>
+      <div class="result-desc" id="resDesc"></div>
+      <div class="result-quote" id="resQuote"></div>
+      <div class="traits-row" id="resTraits"></div>
+      <div class="radar-section">
+        <div class="radar-title">灵魂维度图谱 &nbsp;<em>Soul Dimensions</em></div>
+        <div class="radar-container" id="radarContainer"></div>
+      </div>
+    </div>
+    <div class="result-footer">
+      <button class="btn-retry" onclick="restartQuiz()">↺ 重测</button>
+      <button class="btn-share" onclick="openShareModal()">✦ 生成长图</button>
+      <button class="btn-retry" onclick="copyShareText()">📋 复制文字</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- SHARE MODAL -->
+<div class="share-modal" id="shareModal">
+  <div class="share-modal-inner">
+    <div class="share-card-wrap">
+      <div id="shareCardInner"></div>
+    </div>
+    <div class="share-actions">
+      <button class="btn-dl" id="btnDownload" onclick="downloadShareImage()">⬇ 下载长图</button>
+      <button class="btn-close-modal" onclick="closeShareModal()">× 关闭</button>
+    </div>
+    <div class="share-hint">长按或右键图片可直接保存 · 下载按钮另存为PNG</div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// CHARACTER DATA — 48 characters
+// ═══════════════════════════════════════════════════
+const characters = {
+  // ── WICKED ──
+  elphaba: {
+    name: "艾尔芭芭", nameEN: "Elphaba",
+    musical: "《魔法坏女巫》Wicked",
+    song: "Defying Gravity", songCN: "无惧引力",
+    emoji: "🧹",
+    gradient: "linear-gradient(135deg, #0d2b1e, #1e5c3a, #0d2b1e)",
+    desc: "你是那个用绿色点亮世界的异类。天生与众不同，满怀理想，即便被整个世界误解，也绝不会为了融入而磨平自己的棱角。你的\"缺陷\"从来都是你最大的力量。",
+    quote: "\"我不再是那些期待中的我，我是真实的我，展翅飞翔。\"",
+    traits: ["理想主义者", "天生反骨", "深度共情", "被低估的天才"]
+  },
+  glinda: {
+    name: "葛琳达", nameEN: "Glinda",
+    musical: "《魔法坏女巫》Wicked",
+    song: "Popular", songCN: "人气女王",
+    emoji: "👑",
+    gradient: "linear-gradient(135deg, #2a0a3a, #7b3fa0, #2a0a3a)",
+    desc: "你活在聚光灯下如鱼得水。天生懂得如何让人喜欢你，善于经营关系，热爱美丽的事物。表面上是完美的社交蝴蝶，但藏在粉色光芒背后，是一颗比任何人都深情的心。",
+    quote: "\"受欢迎是可以学会的，但你心里那份善良是天生的。\"",
+    traits: ["社交高手", "热情真诚", "完美主义", "深藏不露的情感"]
+  },
+  // ── PHANTOM OF THE OPERA ──
+  christine: {
+    name: "克里斯汀", nameEN: "Christine Daaé",
+    musical: "《歌剧魅影》The Phantom of the Opera",
+    song: "Think of Me", songCN: "想起我",
+    emoji: "🌹",
+    gradient: "linear-gradient(135deg, #1a0d1e, #5c2d6e, #1a0d1e)",
+    desc: "你是一个天赋异禀、内心温柔的人。你渴望被引导，被理解，被爱。你在艺术中找到灵魂的出口，常常在现实与梦境的边界游走——那里是你最真实的地方。",
+    quote: "\"请想起我……那些你心里温柔的瞬间。\"",
+    traits: ["艺术灵魂", "温柔易感", "渴望认可", "梦想家"]
+  },
+  phantom: {
+    name: "魅影", nameEN: "The Phantom",
+    musical: "《歌剧魅影》The Phantom of the Opera",
+    song: "Music of the Night", songCN: "夜曲",
+    emoji: "🎭",
+    gradient: "linear-gradient(135deg, #060610, #1a1a40, #060610)",
+    desc: "你是一个被世界拒绝却又不得不闯入世界的天才。你把全部热情注入创作，你的爱是燃烧的火焰——没有边界，没有节制，只有全然给出的自己。最深的孤独住在最耀眼的才华里。",
+    quote: "\"夜晚是你的世界，音乐是你唯一可以真实存在的语言。\"",
+    traits: ["孤独天才", "极致浪漫", "执念深重", "创造力爆棚"]
+  },
+  // ── HAMILTON ──
+  hamilton: {
+    name: "亚历山大·汉密顿", nameEN: "Alexander Hamilton",
+    musical: "《汉密顿》Hamilton",
+    song: "My Shot", songCN: "我的机会",
+    emoji: "⚡",
+    gradient: "linear-gradient(135deg, #0a0f2e, #1a2f6e, #0a0f2e)",
+    desc: "你不会浪费自己的机会。永远写得最快、想得最远、说得最多。你相信努力可以对抗出身，相信遗产比生命更重要。唯一的问题是——你总是忘记停下来。",
+    quote: "\"我绝对不会错过我的机会。\"",
+    traits: ["野心勃勃", "口才出众", "追求遗产", "容易冲动"]
+  },
+  burr: {
+    name: "阿龙·伯尔", nameEN: "Aaron Burr",
+    musical: "《汉密顿》Hamilton",
+    song: "Wait for It", songCN: "等待时机",
+    emoji: "🎯",
+    gradient: "linear-gradient(135deg, #1a0a0a, #5a2020, #1a0a0a)",
+    desc: "你懂得等待。在别人冲动的时候，你冷静；在别人放弃的时候，你坚持。你用耐心和观察积累力量——你不是没有欲望，只是比所有人都更懂得时机的价值。",
+    quote: "\"我在等待，等待那属于我的时刻。\"",
+    traits: ["冷静计算", "高度克制", "深谋远虑", "内敛的野心"]
+  },
+  eliza: {
+    name: "伊莱扎", nameEN: "Eliza Hamilton",
+    musical: "《汉密顿》Hamilton",
+    song: "That Would Be Enough", songCN: "这就足够了",
+    emoji: "💌",
+    gradient: "linear-gradient(135deg, #0a1535, #2a4580, #0a1535)",
+    desc: "你是那个把所有人撑起来的人。不需要掌声，不需要舞台，你的爱是真实的、扎根的、生生不息的。即使被伤害，你也选择留在故事里，继续书写。",
+    quote: "\"只要有你，只要有这个家，已经足够了。\"",
+    traits: ["忠诚无私", "情感强大", "以爱为根", "内心坚韧"]
+  },
+  angelica: {
+    name: "安吉丽卡", nameEN: "Angelica Schuyler",
+    musical: "《汉密顿》Hamilton",
+    song: "Satisfied", songCN: "满足",
+    emoji: "📚",
+    gradient: "linear-gradient(135deg, #1a0a2e, #4a1a7e, #1a0a2e)",
+    desc: "你看穿了所有人，却把最好的自己献给了别人。你同时用十个角度理解一件事，永远是房间里最聪明的人。你学会了满足——但那个\"满足\"背后，是你为爱做出的最高贵的牺牲。",
+    quote: "\"我已经满足了……我必须这样告诉自己。\"",
+    traits: ["极高智识", "深藏情感", "牺牲精神", "一眼看穿人心"]
+  },
+  george3: {
+    name: "乔治三世国王", nameEN: "King George III",
+    musical: "《汉密顿》Hamilton",
+    song: "You'll Be Back", songCN: "你会回来",
+    emoji: "🤴",
+    gradient: "linear-gradient(135deg, #0a0a2e, #1a1a6e, #3a0a1e)",
+    desc: "你用最温柔的语气说出最令人不寒而栗的话——这是你的专长。在你的世界观里，爱与占有是同一件事，离去不是选择，而是一种背叛。你的迷人和你的危险，来自同一个地方。",
+    quote: "\"你会回来，你总会回来的，因为我爱你。\"",
+    traits: ["迷人的控制欲", "拒绝放手", "以爱为名的威胁", "永远是自己故事的主角"]
+  },
+  washington: {
+    name: "乔治·华盛顿", nameEN: "George Washington",
+    musical: "《汉密顿》Hamilton",
+    song: "One Last Time", songCN: "最后一次",
+    emoji: "🦅",
+    gradient: "linear-gradient(135deg, #050d1a, #0d2240, #050d1a)",
+    desc: "你懂得什么时候退场，这是最难得的智慧。你的力量不在于你做了多少，而在于你选择在什么时候停下来。你的离去本身就是最伟大的遗产——因为你明白，没有人是不可替代的。",
+    quote: "\"历史将会注视着我们，我们必须做出正确的选择。\"",
+    traits: ["知进退", "格局宏大", "坚定自制", "以身作则的领导力"]
+  },
+  lafayette: {
+    name: "拉法耶特", nameEN: "Lafayette",
+    musical: "《汉密顿》Hamilton",
+    song: "Guns and Ships", songCN: "枪与船",
+    emoji: "⚔️",
+    gradient: "linear-gradient(135deg, #0a0a20, #1a1a60, #200a0a)",
+    desc: "你爱得热烈，做事雷厉风行，永远是第一个冲上去的那个人。你用行动证明一切，语言可能是你的障碍，但从来不是你的限制。有你在的地方，士气从不会低落。",
+    quote: "\"我快得不可思议，一直在突破极限！\"",
+    traits: ["冲劲十足", "天生将领", "忠诚盟友", "藏不住的热情"]
+  },
+  // ── LES MISÉRABLES ──
+  eponine: {
+    name: "爱潘妮", nameEN: "Éponine",
+    musical: "《悲惨世界》Les Misérables",
+    song: "On My Own", songCN: "独自一人",
+    emoji: "🌧️",
+    gradient: "linear-gradient(135deg, #0d1520, #2a3d55, #0d1520)",
+    desc: "你爱得很深，但你的爱常常单向流动。你懂得用幻想把现实包裹得温柔一些。你是边缘的守望者，最忠实的人，也是最容易被忽视的那一个。",
+    quote: "\"独自一人，我只能幻想他在我身旁。\"",
+    traits: ["深情专一", "自我牺牲", "活在幻想", "被低估的忠诚"]
+  },
+  valjean: {
+    name: "冉·阿让", nameEN: "Jean Valjean",
+    musical: "《悲惨世界》Les Misérables",
+    song: "Bring Him Home", songCN: "带他回家",
+    emoji: "⛓️",
+    gradient: "linear-gradient(135deg, #0d1020, #1e2e50, #0d1020)",
+    desc: "你用一生诠释什么叫做救赎。你曾被世界压垮，但你选择用善良回应苦难。你保护别人的决心，比任何力量都更强大。你不是因为完美而伟大，而是因为不断选择更好的自己。",
+    quote: "\"请带他回家，他还年轻，还有他的一生。\"",
+    traits: ["救赎之路", "守护者", "不屈意志", "大爱无疆"]
+  },
+  javert: {
+    name: "沙威", nameEN: "Javert",
+    musical: "《悲惨世界》Les Misérables",
+    song: "Stars", songCN: "星辰",
+    emoji: "⚖️",
+    gradient: "linear-gradient(135deg, #0d0d20, #1e2040, #0d0d20)",
+    desc: "你活在黑白分明的世界里。规则是你的信仰，秩序是你的宗教。你的问题不是冷漠，而是太过于确定——当世界开始出现灰色地带，你不知道该往哪里走。",
+    quote: "\"星辰永恒，秩序不变，正义不会妥协。\"",
+    traits: ["原则至上", "非黑即白", "使命感强", "无法弯曲"]
+  },
+  enjolras: {
+    name: "安灼拉", nameEN: "Enjolras",
+    musical: "《悲惨世界》Les Misérables",
+    song: "Do You Hear the People Sing?", songCN: "你听到人民的歌声了吗",
+    emoji: "🔴",
+    gradient: "linear-gradient(135deg, #2a0000, #6a0000, #2a0000)",
+    desc: "你为理想而生，为理想而死。爱情不是你的语言，革命才是。你的眼神里永远有一团无法熄灭的火，那是你看向想要的未来时燃起来的。当你说\"明天\"，你真的相信。",
+    quote: "\"就算我们倒下，也会有人站起来，继续歌唱。\"",
+    traits: ["革命者", "理想主义烈士", "令人信仰的存在", "以身殉道"]
+  },
+  grantaire: {
+    name: "格朗泰尔", nameEN: "Grantaire",
+    musical: "《悲惨世界》Les Misérables",
+    song: "Drink with Me", songCN: "与我共饮",
+    emoji: "🍷",
+    gradient: "linear-gradient(135deg, #1a0808, #3d1515, #1a0808)",
+    desc: "你用嘲讽包裹着你最深的情感。你不相信任何主义，但你相信某一个人。你的玩世不恭是一种自我保护，因为你比任何人都清楚：真心付出是最危险的事。在最后的时刻，你选择站在你所相信的人身边。",
+    quote: "\"我不相信任何东西……除了他。\"",
+    traits: ["犬儒主义", "酒为盔甲", "孤注一掷的忠诚", "嘲讽下的深情"]
+  },
+  marius: {
+    name: "马吕斯", nameEN: "Marius Pontmercy",
+    musical: "《悲惨世界》Les Misérables",
+    song: "Empty Chairs at Empty Tables", songCN: "空椅子空桌子",
+    emoji: "📜",
+    gradient: "linear-gradient(135deg, #0d1530, #1e3060, #0d1530)",
+    desc: "你是那个被爱情和革命同时击中的人——但最终是爱情赢了，你也因此负疚终生。你活下来了，而其他人没有。那份幸存者的悲哀，成为你余生的底色。",
+    quote: "\"我的朋友们，你们在哪里……空椅子，空桌子。\"",
+    traits: ["浪漫主义者", "幸存者罪恶感", "被爱改变", "在记忆里永存"]
+  },
+  cosette: {
+    name: "柯赛特", nameEN: "Cosette",
+    musical: "《悲惨世界》Les Misérables",
+    song: "Castle on a Cloud", songCN: "云端城堡",
+    emoji: "☁️",
+    gradient: "linear-gradient(135deg, #0a1530, #1a3060, #0a1530)",
+    desc: "你在苦难里还能梦见云端的城堡，这是一种难得的力量。你不是天真，而是选择了用光来看世界。你的温柔是一种意志，不是软弱——你把爱传递给身边每一个人。",
+    quote: "\"我有一座云端上的城堡，那里没有人哭泣。\"",
+    traits: ["温柔坚韧", "梦想家", "纯粹善良", "爱的守护者"]
+  },
+  thenardier: {
+    name: "德纳第", nameEN: "Thénardier",
+    musical: "《悲惨世界》Les Misérables",
+    song: "Master of the House", songCN: "一家之主",
+    emoji: "🎲",
+    gradient: "linear-gradient(135deg, #1a1505, #3d3010, #1a1505)",
+    desc: "你是生存游戏的高手。道德是奢侈品，活下去才是王道。你用一个大大的笑容掩盖所有的算计。在你的字典里，\"机会\"永远大于\"原则\"，而你总能在废墟里找到值钱的东西。",
+    quote: "\"一家之主，为大家服务……顺便为自己捞一点。\"",
+    traits: ["机会主义者", "黑色幽默", "笑里藏刀", "为自己活"]
+  },
+  // ── DEAR EVAN HANSEN ──
+  evan: {
+    name: "埃文·汉森", nameEN: "Evan Hansen",
+    musical: "《亲爱的埃文·汉森》Dear Evan Hansen",
+    song: "Waving Through a Window", songCN: "隔窗挥手",
+    emoji: "🌳",
+    gradient: "linear-gradient(135deg, #0d1e0d, #1e4020, #0d1e0d)",
+    desc: "你比任何人都更渴望被看见，却在被看见的时候下意识地躲起来。你对这个世界充满焦虑，但你也充满感受力——那些别人轻易略过的细节，你都记得。",
+    quote: "\"也许有一天，有人真的会看见我。\"",
+    traits: ["高敏感者", "渴望连接", "社交焦虑", "细腻敏锐"]
+  },
+  zoe: {
+    name: "佐伊·墨菲", nameEN: "Zoe Murphy",
+    musical: "《亲爱的埃文·汉森》Dear Evan Hansen",
+    song: "Requiem", songCN: "安魂曲",
+    emoji: "🎸",
+    gradient: "linear-gradient(135deg, #0a1a20, #1a3540, #0a1a20)",
+    desc: "你拒绝成为别人悲剧故事里的配角。你有自己的伤痛，自己的力量，不需要任何人的救赎叙事来定义你。你选择直面复杂的真实，而不是活在粉饰的温柔里。",
+    quote: "\"我不欠任何人一首安魂曲。\"",
+    traits: ["独立清醒", "拒绝美化", "情感复杂", "有界限"]
+  },
+  // ── CABARET ──
+  emcee: {
+    name: "司仪", nameEN: "The Emcee",
+    musical: "《卡巴莱》Cabaret",
+    song: "Willkommen", songCN: "欢迎",
+    emoji: "🎪",
+    gradient: "linear-gradient(135deg, #1a0505, #4a1010, #1a0505)",
+    desc: "你是那个站在镜子前面，反射出整个世界荒诞面目的人。你用表演来说真话，用欢笑来包裹批判。在你的世界里，舞台就是真实，你永远是那个看穿一切却微笑着欢迎所有人的人。",
+    quote: "\"欢迎来到卡巴莱！把现实留在门外吧。\"",
+    traits: ["反讽高手", "政治敏感", "表演即生命", "洞穿荒诞"]
+  },
+  sally: {
+    name: "莎莉·鲍尔斯", nameEN: "Sally Bowles",
+    musical: "《卡巴莱》Cabaret",
+    song: "Maybe This Time", songCN: "也许这一次",
+    emoji: "🥀",
+    gradient: "linear-gradient(135deg, #1a0a15, #4a1a35, #1a0a15)",
+    desc: "你用表演和欢笑把脆弱包裹得密不透风。你相信\"也许这一次\"——也许这次会不一样，也许这次会是真的。你活在当下，因为你不敢看太远的地方。",
+    quote: "\"也许这一次，我真的会赢。\"",
+    traits: ["逃避主义", "活在当下", "艺术敏感", "用欢笑保护自己"]
+  },
+  // ── SWEENEY TODD ──
+  sweeney: {
+    name: "斯威尼·陶德", nameEN: "Sweeney Todd",
+    musical: "《斯威尼·陶德》Sweeney Todd",
+    song: "Epiphany", songCN: "顿悟",
+    emoji: "🪒",
+    gradient: "linear-gradient(135deg, #150505, #3d0a0a, #150505)",
+    desc: "你经历过真实的失去，那种伤让你变成了另一个人。你的愤怒不是无缘无故的，你的黑暗是真实苦难的回响。只是——当你的痛苦成为行动，你已经不记得自己最初想要的是什么了。",
+    quote: "\"世界充满了无辜的人，可谁是真正无辜的？\"",
+    traits: ["被创伤改变", "执念复仇", "悲剧英雄", "扭曲的正义感"]
+  },
+  lovett: {
+    name: "洛维特太太", nameEN: "Mrs. Lovett",
+    musical: "《斯威尼·陶德》Sweeney Todd",
+    song: "The Worst Pies in London", songCN: "伦敦最难吃的馅饼",
+    emoji: "🥧",
+    gradient: "linear-gradient(135deg, #1a1005, #3d2a0a, #1a1005)",
+    desc: "你是实用主义的天才。你看到问题，你找解决方案，你不太纠结道德的灰色地带。你用黑色幽默消化一切，用创造力在最糟糕的处境里活下去。",
+    quote: "\"这馅饼……好吧，至少比昨天好一点了。\"",
+    traits: ["务实至上", "黑色幽默", "创造力强", "道德弹性"]
+  },
+  // ── CHICAGO ──
+  roxie: {
+    name: "洛克茜·哈特", nameEN: "Roxie Hart",
+    musical: "《芝加哥》Chicago",
+    song: "Roxie", songCN: "洛克茜",
+    emoji: "⭐",
+    gradient: "linear-gradient(135deg, #1a1500, #4a3d00, #1a1500)",
+    desc: "你生活在自己是主角的故事里——而且你有足够的魅力让别人也相信这一点。你对名声的渴望是真实的，你的自我是巨大的，而且最重要的：你总能在绝境中找到翻盘的路。",
+    quote: "\"我是洛克茜，我就是那颗明星。\"",
+    traits: ["自我中心", "魅力四射", "生存高手", "活在聚光灯里"]
+  },
+  velma: {
+    name: "维尔玛·凯利", nameEN: "Velma Kelly",
+    musical: "《芝加哥》Chicago",
+    song: "All That Jazz", songCN: "所有那些爵士",
+    emoji: "🎷",
+    gradient: "linear-gradient(135deg, #150505, #400d0d, #150505)",
+    desc: "你是房间里最冷静的那个人。你没有妄想，只有策略。你明白规则是谁写的，你也明白如何在规则里找到最大利益。你的魅力是一把计算过的武器，精准而致命。",
+    quote: "\"爵士乐是关于活下去，而不是道德。\"",
+    traits: ["冷静计算", "魅力即武器", "现实主义", "策略大师"]
+  },
+  // ── LEGALLY BLONDE ──
+  elle: {
+    name: "艾儿·伍兹", nameEN: "Elle Woods",
+    musical: "《律政俏佳人》Legally Blonde",
+    song: "What You Want", songCN: "你想要的",
+    emoji: "💅",
+    gradient: "linear-gradient(135deg, #1a0020, #5a0060, #1a0020)",
+    desc: "你被所有人低估了——然后你用行动把他们统统打脸。你带着粉色和笑容走进任何一个严肃的房间，因为你知道：真正的实力不需要伪装成另一种样子才能被认可。",
+    quote: "\"我不需要变成别人，我只需要成为更好的自己。\"",
+    traits: ["被低估的实力", "乐观不屈", "真实自我", "证明给你看"]
+  },
+  // ── RENT ──
+  mimi: {
+    name: "咪咪", nameEN: "Mimi Marquez",
+    musical: "《租》Rent",
+    song: "Out Tonight", songCN: "今晚出发",
+    emoji: "🕯️",
+    gradient: "linear-gradient(135deg, #1a0a00, #4a2500, #1a0a00)",
+    desc: "你活在当下，因为你知道\"今天\"是唯一确定的礼物。你用燃烧的热情拥抱每一个瞬间，你的爱炽烈而真实。也许你有时候会走错路，但你从来不假装自己是别人。",
+    quote: "\"今晚我要出发，今晚我活着。\"",
+    traits: ["活在当下", "燃烧热情", "真实自我", "无所畏惧"]
+  },
+  roger: {
+    name: "罗杰·戴维斯", nameEN: "Roger Davis",
+    musical: "《租》Rent",
+    song: "One Song Glory", songCN: "一首荣耀之曲",
+    emoji: "🎸",
+    gradient: "linear-gradient(135deg, #100a00, #3a2000, #100a00)",
+    desc: "你活在对\"意义\"的追问里。你想在有限的时间里写出那首值得被记住的歌——那首关于你活过的证明。你害怕消失在平凡里，所以你不断燃烧，不断寻找。",
+    quote: "\"我只需要一首歌，一首能证明我来过的歌。\"",
+    traits: ["寻找意义", "艺术执念", "有点自我毁灭", "渴望留下印记"]
+  },
+  // ── HELLO DOLLY ──
+  dolly: {
+    name: "多莉·利维", nameEN: "Dolly Levi",
+    musical: "《你好，多莉！》Hello, Dolly!",
+    song: "Before the Parade Passes By", songCN: "在游行过去之前",
+    emoji: "💐",
+    gradient: "linear-gradient(135deg, #1a1200, #4a3500, #1a1200)",
+    desc: "你热爱生活，生活也热爱你。你有一种神奇的能力把所有人推向他们命中注定的地方。你懂得如何让一个房间充满欢笑，也懂得在沉默里给出最温柔的智慧。",
+    quote: "\"在游行过去之前，我要回到生命里去。\"",
+    traits: ["热爱生活", "天生媒人", "充满智慧", "人间暖阳"]
+  },
+  // ── FIDDLER ON THE ROOF ──
+  tevye: {
+    name: "泰维", nameEN: "Tevye",
+    musical: "《屋顶上的小提琴手》Fiddler on the Roof",
+    song: "If I Were a Rich Man", songCN: "如果我是个富翁",
+    emoji: "🎻",
+    gradient: "linear-gradient(135deg, #100a00, #2e1c05, #100a00)",
+    desc: "你一边问着神，一边自己找答案。你尊重传统，但你的心比传统更宽广。面对变化，你发出\"换一方面来说……\"——这是一种诚实，也是一种智慧。",
+    quote: "\"换一方面来说……也许我不得不接受。\"",
+    traits: ["哲学思考", "传统与包容", "家庭至上", "爱抱怨又温柔"]
+  },
+  // ── SOUND OF MUSIC ──
+  maria: {
+    name: "玛利亚", nameEN: "Maria",
+    musical: "《音乐之声》The Sound of Music",
+    song: "The Sound of Music", songCN: "音乐之声",
+    emoji: "⛰️",
+    gradient: "linear-gradient(135deg, #0a1a0a, #1a3a1a, #0a1a0a)",
+    desc: "你带着山野的自由和孩子般的喜悦走进任何地方。你不是不懂世界的复杂，你只是选择用爱和音乐来回应它。你的到来让原本沉默的地方开始唱歌。",
+    quote: "\"山上的音乐，来自我心里最深的喜悦。\"",
+    traits: ["自由灵魂", "音乐治愈", "带来光亮", "真实的温柔"]
+  },
+  // ── JESUS CHRIST SUPERSTAR ──
+  judas: {
+    name: "犹大", nameEN: "Judas Iscariot",
+    musical: "《耶稣基督超级明星》Jesus Christ Superstar",
+    song: "Heaven on Their Minds", songCN: "他们心里的天堂",
+    emoji: "🪙",
+    gradient: "linear-gradient(135deg, #0f0f0f, #252525, #0f0f0f)",
+    desc: "你比任何人都爱他，也是你把他交了出去。你的背叛不是出于恶意，而是出于绝望的现实主义——你看见了他们看不见的危险。历史记住了你的行为，却忘了你为什么这样做。",
+    quote: "\"我只是想保护他，可最终成了让他毁灭的人。\"",
+    traits: ["痛苦的清醒者", "政治现实主义", "被历史误解", "以爱之名的背叛"]
+  },
+  jesus: {
+    name: "耶稣", nameEN: "Jesus of Nazareth",
+    musical: "《耶稣基督超级明星》Jesus Christ Superstar",
+    song: "Gethsemane", songCN: "客西马尼",
+    emoji: "✝️",
+    gradient: "linear-gradient(135deg, #1a1500, #3a3010, #1a1500)",
+    desc: "你承载着所有人的期待，却在深夜独自质疑。你不是不会害怕，你只是选择了走那条路。你的人性和使命之间的挣扎，是这个故事里最真实的东西。",
+    quote: "\"为什么是我？为什么要我承担这一切？\"",
+    traits: ["承载期待", "人性的挣扎", "最终的接受", "孤独的使命"]
+  },
+  marym: {
+    name: "抹大拉的玛利亚", nameEN: "Mary Magdalene",
+    musical: "《耶稣基督超级明星》Jesus Christ Superstar",
+    song: "I Don't Know How to Love Him", songCN: "我不知道怎样爱他",
+    emoji: "💜",
+    gradient: "linear-gradient(135deg, #1a0a25, #3d1a55, #1a0a25)",
+    desc: "你爱上了一个超越你理解的人。你不知道如何定义这份感情，但你知道你会一直在他身边。你的爱是最接地气的那一种——不带期待，不要回报，只是陪着。",
+    quote: "\"我不知道怎样爱他，但我知道我必须在他身边。\"",
+    traits: ["无条件的爱", "困惑而真实", "接地气的陪伴", "超越定义的情感"]
+  },
+  // ── MOZART L'OPÉRA ROCK ──
+  mozart: {
+    name: "莫扎特", nameEN: "Wolfgang Amadeus Mozart",
+    musical: "《摇滚莫扎特》Mozart l'Opéra Rock",
+    song: "Tatoue-moi", songCN: "刺青",
+    emoji: "🎹",
+    gradient: "linear-gradient(135deg, #050a2a, #1020a0, #050a2a)",
+    desc: "你带着一种孩子的灵魂进入了一个不适合孩子的世界。你的天才是真实的，你的叛逆是真实的，你对自由的渴望也是真实的——可惜这个世界更喜欢把天才装进笼子里。",
+    quote: "\"我不想被驯服，我只想用音乐活着。\"",
+    traits: ["天才儿童", "拒绝被驯服", "活在音符里", "被自由烧毁"]
+  },
+  salieri: {
+    name: "萨列里", nameEN: "Antonio Salieri",
+    musical: "《摇滚莫扎特》Mozart l'Opéra Rock",
+    song: "Le bien qui fait mal", songCN: "令人痛苦的美好",
+    emoji: "🎼",
+    gradient: "linear-gradient(135deg, #0a0a0a, #1a1a1a, #0a0a0a)",
+    desc: "你足够聪明，聪明到看见自己的局限。你认出了那个你永远无法成为的人，那种痛苦比平庸更难承受。你不是坏人，只是被嫉妒和清醒同时折磨着——这两者都是爱的变体。",
+    quote: "\"我认出了天才，这认出让我痛苦了一生。\"",
+    traits: ["看见天才的折磨", "清醒的局限感", "嫉妒即尊重", "复杂的对手"]
+  },
+  constanze: {
+    name: "康斯坦泽", nameEN: "Constanze Weber",
+    musical: "《摇滚莫扎特》Mozart l'Opéra Rock",
+    song: "Vivre à en crever", songCN: "活到窒息",
+    emoji: "🎶",
+    gradient: "linear-gradient(135deg, #200a00, #6a2000, #200a00)",
+    desc: "你爱上了一阵风，然后你学会了在风里站稳。你既是他最坚实的后盾，也是唯一真正懂他的人。你的爱不只是温柔，也是一种力量——在混乱里守住那颗心。",
+    quote: "\"我要活到窒息，活到无法再承受为止。\"",
+    traits: ["爱中的力量", "懂天才的人", "热烈投入", "在混乱里站稳"]
+  },
+  // ── LE ROUGE ET LE NOIR ──
+  julien: {
+    name: "于连·索雷尔", nameEN: "Julien Sorel",
+    musical: "《摇滚红与黑》Le Rouge et le Noir",
+    song: "Je suis né pour un autre destin", songCN: "我生来有另一种命运",
+    emoji: "🗡️",
+    gradient: "linear-gradient(135deg, #1a0505, #4a0f0f, #1a0505)",
+    desc: "你在雄心壮志和真实情感之间撕裂。你渴望用才华打破阶级，你以为爱情只是棋盘上的棋子——但最终，感情赢了，算计输了。你的矛盾是那个时代所有有梦想的年轻人的矛盾。",
+    quote: "\"我生来有另一种命运，而不是这个平凡的所在。\"",
+    traits: ["阶级野心", "冷静表面热血内心", "真情与算计的撕裂", "时代里的逆行者"]
+  },
+  mathilde: {
+    name: "玛蒂尔德", nameEN: "Mathilde de la Mole",
+    musical: "《摇滚红与黑》Le Rouge et le Noir",
+    song: "Le rouge et le noir", songCN: "红与黑",
+    emoji: "🏰",
+    gradient: "linear-gradient(135deg, #1a0a2e, #3d1a6e, #1a0a2e)",
+    desc: "你厌倦了所有能给你的东西，所以你去追寻那些不该属于你的。你追求一种历史书上才有的宏大情感，为此愿意颠覆所有人的预期。你的爱情是对自己阶级的一次反叛。",
+    quote: "\"在红与黑之间，我只想要那个不可能的。\"",
+    traits: ["贵族的叛逆", "追求宏大情感", "不满现状", "高冷但热烈"]
+  },
+  renal: {
+    name: "德·瑞纳尔夫人", nameEN: "Madame de Rênal",
+    musical: "《摇滚红与黑》Le Rouge et le Noir",
+    song: "Une vie pour rien", songCN: "虚度的一生",
+    emoji: "🌸",
+    gradient: "linear-gradient(135deg, #200a10, #5a1a2e, #200a10)",
+    desc: "在遇见他之前，你从未真正活着。你第一次知道了什么是被深深看见的感觉，什么是真正的爱——哪怕那份爱让你失去了一切，你也从不后悔。你在爱里第一次成为了完整的自己。",
+    quote: "\"虚度的一生，直到遇见他，才知道活着是什么滋味。\"",
+    traits: ["初次真正活着", "甘愿牺牲的爱", "觉醒的灵魂", "在爱里重生"]
+  },
+  // ── SIX ──
+  aragon: {
+    name: "阿拉贡的凯瑟琳", nameEN: "Catherine of Aragon",
+    musical: "《六》Six",
+    song: "No Way", songCN: "不可能",
+    emoji: "🌺",
+    gradient: "linear-gradient(135deg, #2a0a0a, #6e1a1a, #2a0a0a)",
+    desc: "你从不接受被扫进历史垃圾桶。你的尊严不依附于任何人的看法，你的立场来自你自己。你拒绝了所有要你弯腰的理由——不是出于傲慢，而是出于原则。历史记住了你。",
+    quote: "\"不可能，我才是真正的王后，永远是。\"",
+    traits: ["尊严不容侵犯", "原则高于一切", "不向权力妥协", "骄傲的坚守"]
+  },
+  boleyn: {
+    name: "安妮·博林", nameEN: "Anne Boleyn",
+    musical: "《六》Six",
+    song: "Don't Lose Ur Head", songCN: "别丢了你的头",
+    emoji: "💋",
+    gradient: "linear-gradient(135deg, #0f0505, #2a0d0d, #0f0505)",
+    desc: "你活得太精彩了，以至于时代容不下你。你聪明、叛逆、用幽默来消化荒诞——因为那是唯一能让你继续前进的方式。你的故事不是悲剧，是一个不该被低估的人的历史。",
+    quote: "\"别丢了你的头……哦等等，那是我的问题。\"",
+    traits: ["黑色幽默", "叛逆天性", "用笑消化苦难", "不该被低估"]
+  },
+  seymour: {
+    name: "珍·西摩", nameEN: "Jane Seymour",
+    musical: "《六》Six",
+    song: "Heart of Stone", songCN: "石之心",
+    emoji: "🕊️",
+    gradient: "linear-gradient(135deg, #0a1020, #1e2845, #0a1020)",
+    desc: "你不是最耀眼的那一个，但你是最真实的。你所做的一切都出于真心，你的爱是安静的、深沉的、不需要任何见证的。有时候，最强大的心是最柔软的那一颗。",
+    quote: "\"我不需要光环，我只想给他我真实的心。\"",
+    traits: ["安静的深情", "真实的善良", "无需见证的爱", "柔软的力量"]
+  },
+  cleves: {
+    name: "克莱维斯的安妮", nameEN: "Anna of Cleves",
+    musical: "《六》Six",
+    song: "Get Down", songCN: "嗨起来",
+    emoji: "💎",
+    gradient: "linear-gradient(135deg, #0a200a, #1a501a, #0a200a)",
+    desc: "别人以为给了你最坏的结局，你却活成了她们里面最自由的一个。你的自我不需要任何人的批准，你的快乐不依赖任何人给你。离开是一种选择，自由是最好的礼物。",
+    quote: "\"什么？被离婚？太棒了，我自由了！\"",
+    traits: ["不依赖认可", "自由是最高价值", "反转了命运", "快乐即反叛"]
+  },
+  howard: {
+    name: "凯瑟琳·霍华德", nameEN: "Katherine Howard",
+    musical: "《六》Six",
+    song: "All You Wanna Do", songCN: "你所想要的一切",
+    emoji: "🦋",
+    gradient: "linear-gradient(135deg, #200a15, #5a1a35, #200a15)",
+    desc: "你只是想要被爱，想要被看见，想要属于自己的那一点点欢乐。这有什么错？错的不是你的渴望，而是那些利用你渴望的人。你太年轻了，太真实了，在一个不值得你的世界里。",
+    quote: "\"我只是想要快乐，这难道是错误吗？\"",
+    traits: ["渴望被爱", "年轻的受害者", "活在当下的joy", "被系统辜负"]
+  },
+  parr: {
+    name: "凯瑟琳·帕尔", nameEN: "Catherine Parr",
+    musical: "《六》Six",
+    song: "I Don't Need Your Love", songCN: "我不需要你的爱",
+    emoji: "📖",
+    gradient: "linear-gradient(135deg, #041520, #0a3050, #041520)",
+    desc: "你是最后一个，也是最清醒的一个。你不需要任何人的叙事来定义你，你自己就能写出自己的故事。你把所有人的经历整合在一起，告诉世界：我们不只是任何人的妻子。",
+    quote: "\"我不需要你的爱来证明我的价值。\"",
+    traits: ["独立清醒", "自己定义自己", "整合者", "最终的主权"]
+  }
+};
+
+// ═══════════════════════════════════════════════════
+// QUESTIONS — 25 questions
+// ═══════════════════════════════════════════════════
+const questions = [
+  {
+    q: "当你走进一个满是陌生人的派对，你的第一反应是？",
+    opts: [
+      { t: "立刻找到最热闹的地方，跟所有人打招呼——陌生人不过是还没认识的朋友", s: {glinda:3,roxie:2,hamilton:2,dolly:3,elle:2,george3:3,lafayette:2,boleyn:2,cleves:2,howard:2,thenardier:2}, d: {ext:3} },
+      { t: "找到一两个看起来有趣的人，开始一段深入的对话", s: {eliza:3,maria:2,tevye:2,mimi:2,evan:1,marius:3,cosette:2,seymour:2,renal:2,constanze:2,marym:2}, d: {ext:1,sel:1} },
+      { t: "悄悄找个角落观察一下，搞清楚格局再说", s: {phantom:3,evan:3,burr:2,sweeney:1,roger:1,judas:3,grantaire:3,salieri:2,julien:2}, d: {ide:1} },
+      { t: "心里已经在策划今晚如何让所有人记住我的名字", s: {emcee:3,velma:3,angelica:2,hamilton:2,roxie:3,washington:1,mathilde:3,parr:2,aragon:2}, d: {amb:2,ext:1} }
+    ]
+  },
+  {
+    q: "面对明显不公平的对待，你的第一反应是？",
+    opts: [
+      { t: "立刻出声反抗，管他后果怎样——沉默就是默许", s: {elphaba:3,hamilton:3,elle:2,mimi:1,enjolras:3,lafayette:2,boleyn:2,aragon:2,parr:2}, d: {reb:3} },
+      { t: "默默记下来，等待最佳时机，一次性反击", s: {burr:3,velma:2,sweeney:2,angelica:2,judas:3,washington:2,salieri:2,julien:3,mathilde:1}, d: {amb:2,reb:1} },
+      { t: "内心很受伤，但表面若无其事，独自消化", s: {evan:3,eponine:3,christine:2,sally:2,glinda:1,renal:2,cosette:2,seymour:2,howard:2,marius:1}, d: {emo:2} },
+      { t: "用行动证明他们错了，不需要解释太多", s: {elle:3,elphaba:2,valjean:2,zoe:2,eliza:2,aragon:2,parr:2,constanze:2}, d: {amb:2} }
+    ]
+  },
+  {
+    q: "如果好友要用一个词形容你，最可能是哪个？",
+    opts: [
+      { t: "\"永远是派对的灵魂，有你就有欢笑\"", s: {glinda:3,dolly:3,roxie:2,elle:2,mimi:2,george3:2,lafayette:2,boleyn:2,cleves:3,howard:2,thenardier:2}, d: {ext:3} },
+      { t: "\"深刻、神秘，总让人想多了解你\"", s: {phantom:3,emcee:3,burr:2,angelica:2,sweeney:1,judas:3,salieri:2,julien:2,grantaire:3}, d: {ide:2} },
+      { t: "\"最忠诚可靠的朋友，永远站在我这边\"", s: {eliza:3,maria:3,tevye:2,valjean:2,zoe:2,washington:2,aragon:2,seymour:3,constanze:2,marius:1}, d: {sel:3} },
+      { t: "\"那个能看透一切的人，总是比我想得更远\"", s: {angelica:3,burr:2,javert:2,lovett:2,velma:2,parr:3,washington:3}, d: {ide:3,amb:1} }
+    ]
+  },
+  {
+    q: "你通常更容易被哪种人深深吸引？",
+    opts: [
+      { t: "热情洋溢、活力四射的人——跟他们在一起就觉得活着", s: {eliza:2,maria:2,mimi:3,dolly:2,roger:1,constanze:2,marius:2,howard:2,renal:1}, d: {ext:1} },
+      { t: "安静但有深度的人——话不多，但每句都有重量", s: {christine:3,sally:2,evan:2,eponine:2,phantom:1,judas:2,marym:3,grantaire:2,cosette:1}, d: {ide:1} },
+      { t: "有远大目标的人——跟他们相处就感觉整个人都在进步", s: {eliza:2,angelica:3,hamilton:2,roxie:1,zoe:2,mathilde:3,julien:2,boleyn:2}, d: {amb:2} },
+      { t: "温柔细心、真正懂你的人——被看见的感觉无可替代", s: {phantom:2,elphaba:2,evan:2,roger:2,maria:2,seymour:2,renal:2,cosette:2,jesus:1}, d: {sel:2} }
+    ]
+  },
+  {
+    q: "你对自己的「形象」是什么态度？",
+    opts: [
+      { t: "非常在意，着装和外表是我展示自己的方式，也是我的盔甲", s: {glinda:3,roxie:3,velma:2,emcee:2,elle:2,george3:2,boleyn:2,howard:2,mathilde:2}, d: {ext:1,amb:1} },
+      { t: "有自己独特的风格，但绝对不随波逐流", s: {elphaba:3,phantom:3,emcee:2,roger:2,mimi:2,mozart:3,boleyn:2,julien:2,lafayette:1}, d: {reb:2} },
+      { t: "外表不重要，内在才是关键，我不太想在这上面花心思", s: {valjean:3,evan:3,eliza:2,tevye:2,maria:2,washington:2,jesus:2,enjolras:2}, d: {ide:2} },
+      { t: "我懂得如何战略性地利用外表——这也是一种能力", s: {velma:3,burr:2,angelica:2,lovett:2,emcee:1,julien:3,mathilde:2,aragon:1}, d: {amb:2} }
+    ]
+  },
+  {
+    q: "你人生中感到最痛苦的是什么？",
+    opts: [
+      { t: "被人误解，付出了一切却得不到认可", s: {elphaba:3,phantom:3,evan:2,eponine:2,roger:1,salieri:3,judas:3,julien:2,grantaire:2}, d: {emo:2,ide:1} },
+      { t: "没有机会表达自己真正想说的、想做的", s: {roger:3,sally:2,christine:2,elphaba:1,hamilton:1,mozart:3,constanze:1}, d: {emo:2} },
+      { t: "深爱的人的离去，那种失去感无法填补", s: {eponine:3,eliza:3,mimi:2,tevye:2,valjean:2,marius:3,cosette:2,renal:3,seymour:2}, d: {sel:2,emo:2} },
+      { t: "理想无法实现，眼睁睁看着自己想要的东西溜走", s: {hamilton:3,elphaba:2,valjean:2,angelica:2,roger:2,enjolras:3,jesus:2,washington:2}, d: {ide:3,amb:1} }
+    ]
+  },
+  {
+    q: "在一段浪漫关系里，你通常扮演什么角色？",
+    opts: [
+      { t: "热烈的追求者——我不害怕先表白，全情投入", s: {hamilton:3,mimi:3,phantom:2,lovett:2,dolly:1,lafayette:2,marius:3,constanze:2,boleyn:2,howard:2}, d: {emo:3,ext:1} },
+      { t: "等待被发现——我相信真正懂我的人会主动找来", s: {christine:3,glinda:2,velma:2,burr:1,sally:2,mathilde:2,george3:1,cosette:2}, d: {ide:1} },
+      { t: "平等的伙伴——两个人互相支撑，共同成长", s: {eliza:3,zoe:3,maria:2,tevye:2,roger:2,washington:2,aragon:2,parr:2}, d: {ide:1,sel:1} },
+      { t: "无私的给予者——我总是先考虑对方的需求", s: {eponine:3,angelica:3,valjean:2,eliza:2,evan:1,seymour:3,renal:3,jesus:2,judas:1}, d: {sel:3} }
+    ]
+  },
+  {
+    q: "遇到一个几乎不可能完成的挑战，你会？",
+    opts: [
+      { t: "越难越兴奋，这正是我证明自己的时候！", s: {hamilton:3,elphaba:2,elle:3,mimi:1,roxie:1,enjolras:2,lafayette:3,mozart:2,boleyn:2}, d: {amb:3,reb:1} },
+      { t: "冷静分析，把大问题拆解成小步骤，制定最优策略", s: {burr:3,javert:2,angelica:2,velma:2,eliza:1,washington:3,judas:2,parr:2,salieri:2}, d: {amb:2,ide:1} },
+      { t: "内心很忐忑，但还是会硬着头皮去做，一边走一边克服恐惧", s: {evan:3,christine:2,eponine:2,roger:2,eliza:2,marius:2,cosette:1,jesus:3,grantaire:1}, d: {emo:1} },
+      { t: "不一定要正面硬刚，换个角度说不定更有效", s: {lovett:3,dolly:2,emcee:2,elle:2,velma:1,thenardier:2,cleves:2,julien:2}, d: {reb:2} }
+    ]
+  },
+  {
+    q: "「规则」对你来说意味着什么？",
+    opts: [
+      { t: "拿来打破的——规则阻止的是改变，而改变才是进步", s: {elphaba:3,emcee:3,hamilton:2,mimi:2,elle:1,mozart:3,enjolras:2,boleyn:2,lafayette:2}, d: {reb:3} },
+      { t: "可以在里面找到漏洞——我不违反规则，只是充分利用它", s: {lovett:3,burr:2,velma:2,roxie:2,angelica:1,thenardier:3,julien:2}, d: {reb:2} },
+      { t: "社会运转的基础——我尊重规则，也期待别人遵守", s: {javert:3,eliza:2,maria:2,tevye:3,valjean:2,aragon:3,washington:2,jesus:2}, d: {ide:1} },
+      { t: "要看是谁制定的、为了谁的利益——背景很重要", s: {elphaba:2,valjean:2,zoe:2,evan:1,dolly:1,washington:1,judas:2,grantaire:2}, d: {ide:2} }
+    ]
+  },
+  {
+    q: "你通常怎么处理强烈的负面情绪？",
+    opts: [
+      { t: "爆发式宣泄——哭出来或者喊出来，不压着", s: {elphaba:2,hamilton:2,sweeney:3,mimi:2,roxie:1,lafayette:2,boleyn:2,constanze:2}, d: {emo:3} },
+      { t: "化悲愤为创作——写歌、写日记、画画，把感受变成作品", s: {roger:3,phantom:3,christine:2,evan:2,sally:1,mozart:3,salieri:2}, d: {emo:2,ide:1} },
+      { t: "一个人消化，不想给别人添麻烦", s: {burr:3,eponine:3,zoe:2,eliza:1,sweeney:2,judas:3,aragon:2,grantaire:2,seymour:2}, d: {} },
+      { t: "把情绪转化成行动的动力，让它燃烧成前进的能量", s: {elphaba:2,valjean:2,elle:2,hamilton:3,sweeney:2,enjolras:3,washington:2,parr:2}, d: {amb:2} }
+    ]
+  },
+  {
+    q: "你最希望以哪种方式被记住？",
+    opts: [
+      { t: "改变了某件重要的事——世界因为我而有所不同", s: {hamilton:3,elphaba:3,valjean:2,emcee:2,enjolras:3,washington:2,judas:2,jesus:2}, d: {amb:3,ide:2} },
+      { t: "我说过或写过的话，让很多人感受到了什么", s: {angelica:3,roger:3,christine:2,phantom:2,evan:1,mozart:3,jesus:3,marius:2}, d: {ide:2,emo:2} },
+      { t: "某个特定的人说：「多亏了你，我的生命不一样了」", s: {eliza:3,dolly:3,valjean:2,lovett:1,maria:2,washington:2,seymour:2,renal:1}, d: {sel:3} },
+      { t: "轰轰烈烈地活过这一生，让人无法忘记我的存在", s: {roxie:3,emcee:3,mimi:2,hamilton:2,sweeney:1,george3:3,boleyn:2,cleves:2,lafayette:2}, d: {amb:2,emo:2} }
+    ]
+  },
+  {
+    q: "你最难承认的弱点是？",
+    opts: [
+      { t: "情感一上来就理智断线，什么都顾不了了", s: {phantom:3,mimi:2,sweeney:3,christine:2,hamilton:2,marius:3,constanze:2,renal:3,howard:2}, d: {emo:3} },
+      { t: "太骄傲，宁可憋着也不肯在别人面前示弱", s: {elphaba:3,hamilton:2,velma:2,javert:2,roxie:1,aragon:3,mathilde:3,boleyn:2,george3:2}, d: {amb:2} },
+      { t: "太在意别人的看法，会为了迎合别人而委屈自己", s: {evan:3,glinda:3,roxie:2,sally:2,eponine:2,howard:3,cosette:1,marius:1}, d: {ext:1,emo:1} },
+      { t: "太固执，一旦认定了就非要按自己的方式来", s: {elphaba:2,javert:3,valjean:2,sweeney:2,zoe:2,enjolras:3,jesus:2,aragon:2}, d: {ide:3} }
+    ]
+  },
+  {
+    q: "你通常如何做重要决定？",
+    opts: [
+      { t: "跟着感觉走——直觉通常比分析更准", s: {mimi:3,maria:2,hamilton:2,elphaba:2,dolly:2,marius:3,constanze:2,renal:2,howard:2}, d: {emo:2} },
+      { t: "把所有可能性考虑一遍，等到最佳时机才出手", s: {burr:3,javert:2,velma:2,angelica:2,eliza:1,washington:2,salieri:2,judas:2}, d: {amb:2} },
+      { t: "征求信任的人的意见——好的决定需要好的对话", s: {evan:3,eliza:2,tevye:2,christine:2,maria:2,marius:1,cosette:2,howard:1}, d: {sel:1,ext:1} },
+      { t: "按照自己的原则来，不管外界怎么想", s: {elphaba:3,valjean:3,zoe:2,javert:2,eliza:1,aragon:3,enjolras:2,parr:2,washington:2}, d: {ide:3} }
+    ]
+  },
+  {
+    q: "在你的人生剧本里，你最像是哪个角色？",
+    opts: [
+      { t: "主角——当然是主角，故事就是围绕我转的", s: {roxie:3,hamilton:3,glinda:2,elle:2,emcee:1,george3:3,enjolras:2,boleyn:2,mozart:2}, d: {amb:3,ext:2} },
+      { t: "那个知道所有秘密的神秘配角，掌握着最关键的信息", s: {emcee:3,burr:3,angelica:2,lovett:2,judas:2,salieri:3,washington:2}, d: {} },
+      { t: "推动主角成长的关键人物，没有我他们到不了那一步", s: {eliza:3,eponine:3,dolly:2,valjean:2,lovett:2,washington:2,seymour:2,renal:2,constanze:2}, d: {sel:3} },
+      { t: "被误解的「反派」——但如果你听完我的故事，你会理解我", s: {phantom:3,elphaba:3,sweeney:2,javert:2,burr:1,judas:3,salieri:2,mathilde:1}, d: {reb:2,emo:1} }
+    ]
+  },
+  {
+    q: "什么能让你感到真正的快乐？",
+    opts: [
+      { t: "掌声和认可——被看见、被欣赏的感觉无可替代", s: {roxie:3,glinda:3,christine:2,hamilton:2,george3:2,boleyn:1,mozart:2}, d: {ext:2,amb:1} },
+      { t: "沉浸在创作中忘记时间——那种状态是纯粹的自由", s: {roger:3,phantom:3,evan:2,emcee:2,sally:1,mozart:3,salieri:2}, d: {ide:2} },
+      { t: "和爱的人在一起的平凡时光——不需要什么特别的", s: {eliza:3,maria:3,tevye:3,valjean:2,mimi:2,marius:2,cosette:3,seymour:3,constanze:2,renal:3}, d: {sel:2} },
+      { t: "实现了一个以前觉得不可能的目标", s: {hamilton:2,elphaba:2,elle:3,zoe:2,burr:2,enjolras:2,parr:3,washington:2,aragon:2}, d: {amb:3} }
+    ]
+  },
+  {
+    q: "如果你诚实面对自己，你的「暗面」是什么？",
+    opts: [
+      { t: "嫉妒和占有欲——我爱的人不能属于别人", s: {phantom:3,sweeney:2,velma:2,roxie:2,mimi:1,salieri:3,george3:3,mathilde:2}, d: {emo:3} },
+      { t: "愤世嫉俗——总觉得这个世界对我不公平", s: {elphaba:2,eponine:3,roger:3,evan:2,sweeney:1,grantaire:3,judas:2}, d: {reb:2} },
+      { t: "自我欺骗——有时候宁可活在幻想里，也不面对现实", s: {sally:3,glinda:2,roxie:2,christine:3,eponine:1,howard:2,cosette:1}, d: {emo:1} },
+      { t: "为了目标可以变得很无情，手段不那么重要", s: {hamilton:2,velma:3,lovett:3,burr:2,angelica:1,thenardier:3,mathilde:2,julien:2}, d: {amb:3} }
+    ]
+  },
+  {
+    q: "经历了重大的失去之后，你会怎么做？",
+    opts: [
+      { t: "愤怒包裹着悲伤，踏上某种形式的「复仇之路」", s: {sweeney:3,phantom:2,eponine:1,zoe:1,elphaba:2,judas:1,boleyn:2}, d: {emo:3,reb:2} },
+      { t: "把情绪深深压下去，收拾好，继续前进", s: {burr:3,eliza:2,javert:2,zoe:3,angelica:2,aragon:2,washington:2,parr:3,judas:1}, d: {} },
+      { t: "允许自己痛苦，慢慢消化，终于找到一种前进的方式", s: {valjean:2,maria:3,dolly:2,eliza:2,tevye:2,marius:2,seymour:2,renal:2,jesus:2,cosette:2}, d: {emo:2,ide:1} },
+      { t: "用热闹和欢笑麻痹自己，让自己不去想太多", s: {roxie:2,sally:3,emcee:2,mimi:2,dolly:1,howard:2,cleves:2,thenardier:1,boleyn:2}, d: {ext:2} }
+    ]
+  },
+  {
+    q: "你最向往的生活状态是？",
+    opts: [
+      { t: "自由自在，不被任何框架束缚，随心所欲地生活", s: {elphaba:3,emcee:3,mimi:3,sally:2,roger:2,mozart:3,boleyn:2,cleves:2,grantaire:2}, d: {reb:3} },
+      { t: "有明确目标，每天都感觉自己在前进和成长", s: {hamilton:3,elle:3,elphaba:2,angelica:2,zoe:2,enjolras:2,parr:2,washington:2}, d: {amb:3} },
+      { t: "充满爱和归属感——身边有真正在乎我的人", s: {eliza:3,maria:3,tevye:3,valjean:2,dolly:2,marius:3,cosette:3,seymour:3,constanze:2,renal:2}, d: {sel:2,ext:1} },
+      { t: "找到真正的使命感，知道自己为何而活", s: {valjean:3,elphaba:2,evan:2,zoe:2,roger:3,enjolras:3,jesus:3,washington:3,parr:2}, d: {ide:3,amb:1} }
+    ]
+  },
+  {
+    q: "如果可以，你最想改变世界的什么？",
+    opts: [
+      { t: "消除所有形式的不平等和偏见，让每个人都能公平地存在", s: {elphaba:3,hamilton:3,valjean:2,emcee:2,elle:1,enjolras:3,lafayette:2,aragon:1}, d: {ide:3,reb:2} },
+      { t: "让更多人懂得享受当下，珍惜眼前拥有的东西", s: {mimi:3,dolly:3,emcee:2,sally:2,maria:2,cleves:2,howard:2}, d: {ext:2} },
+      { t: "让更多人能找到真正的爱和归属感", s: {eliza:2,maria:2,evan:3,tevye:2,dolly:2,marius:3,cosette:2,renal:2,marym:2}, d: {sel:3} },
+      { t: "建立一个更有秩序、更公正的社会体系", s: {javert:3,valjean:2,zoe:2,angelica:2,eliza:1,aragon:2,washington:3,parr:2}, d: {ide:2} }
+    ]
+  },
+  {
+    q: "最后一幕：如果你的人生是一部音乐剧，最后一幕是？",
+    opts: [
+      { t: "我终于得到了我一直想要的，谢幕时的掌声是最好的结局", s: {roxie:3,glinda:2,elle:3,hamilton:2,dolly:1,george3:2,cleves:2,boleyn:1,thenardier:2}, d: {amb:3} },
+      { t: "我意识到真正重要的东西，不一定是我最初想要的", s: {tevye:3,valjean:3,dolly:2,eliza:2,maria:2,marius:3,washington:2,jesus:2,aragon:2}, d: {ide:2,sel:1} },
+      { t: "悲壮但有意义——我的选择成全了别人，我无怨无悔", s: {eponine:3,angelica:3,valjean:2,elphaba:2,sweeney:2,enjolras:3,judas:3,seymour:2,renal:2}, d: {sel:3,emo:2} },
+      { t: "开放式结局——故事没有结束，我继续上路", s: {burr:3,emcee:2,roger:3,evan:2,eliza:1,grantaire:2,mozart:3,washington:1}, d: {reb:1} }
+    ]
+  },
+  {
+    q: "当你真正在乎一个人，却不得不做出伤害他的选择时？",
+    opts: [
+      { t: "我会告诉自己：这是为了更大的利益", s: {judas:3,burr:2,washington:2,velma:2,angelica:2,javert:1}, d: {amb:2,ide:1} },
+      { t: "我无论如何都做不到，宁可自己受苦", s: {eponine:3,eliza:2,seymour:3,valjean:2,jesus:2,marym:2,renal:2}, d: {sel:3,emo:2} },
+      { t: "我会做，但这件事会跟随我一生", s: {sweeney:2,grantaire:2,marius:2,washington:2,hamilton:1,valjean:2}, d: {emo:3} },
+      { t: "对我来说，爱和伤害根本不能共存，我找第三条路", s: {phantom:2,mimi:2,constanze:2,cosette:1,howard:1,dolly:2,lovett:1}, d: {ide:2} }
+    ]
+  },
+  {
+    q: "你和「权威」的关系是？",
+    opts: [
+      { t: "我就是权威——这个世界就应该按我的意志运转", s: {george3:3,phantom:2,velma:1,roxie:1,javert:2,aragon:2}, d: {amb:3} },
+      { t: "权威是用来挑战的——系统不改变，世界就不会变", s: {elphaba:2,mozart:3,hamilton:2,boleyn:2,lafayette:2,enjolras:2,elle:1}, d: {reb:3} },
+      { t: "权威是一种工具——我在其中找到我需要的空间", s: {burr:3,julien:2,thenardier:2,velma:2,parr:2,lovett:1}, d: {amb:1} },
+      { t: "权威和我无关——我只想做我自己的事", s: {mimi:2,grantaire:2,cleves:3,roger:2,sally:2,constanze:1}, d: {reb:2} }
+    ]
+  },
+  {
+    q: "面对比你更有才华的人，你通常怎么做？",
+    opts: [
+      { t: "这个前提不成立——我就是最有才华的那个人", s: {george3:3,hamilton:2,roxie:2,mozart:3,emcee:1}, d: {amb:2,ext:1} },
+      { t: "我认出了他的伟大，那种认出让我痛苦", s: {salieri:3,phantom:2,roger:2,grantaire:1,burr:1}, d: {emo:3,ide:1} },
+      { t: "我从他身上学习，努力成为更好的自己", s: {elle:2,eliza:2,burr:1,washington:2,constanze:1,evan:2,marius:1}, d: {ide:2} },
+      { t: "我默默支持他，把光推向他", s: {angelica:2,eliza:2,constanze:3,renal:2,seymour:2,marym:2,eponine:1}, d: {sel:3} }
+    ]
+  },
+  {
+    q: "如果你的故事从头重来，你会改变什么？",
+    opts: [
+      { t: "什么都不改——我的一切选择成就了今天的我", s: {valjean:2,elphaba:2,aragon:2,parr:2,elle:2,cleves:2,emcee:1}, d: {ide:2} },
+      { t: "我会更大胆，更早追求我真正想要的", s: {hamilton:2,lafayette:2,mathilde:2,boleyn:2,constanze:1,marius:1,renal:1}, d: {amb:2,reb:1} },
+      { t: "我不会再把心交给那个不值得的人", s: {eponine:2,christine:2,renal:2,howard:2,sally:2,cosette:1}, d: {emo:2} },
+      { t: "我会找到一条别的路，一种不这么两败俱伤的方式", s: {judas:3,sweeney:2,marius:2,grantaire:2,washington:2,jesus:2}, d: {ide:2} }
+    ]
+  },
+  {
+    q: "你觉得真正的自由是什么？",
+    opts: [
+      { t: "活在自己的规则里，不被任何人定义", s: {elphaba:2,mozart:2,cleves:3,boleyn:2,emcee:2,parr:2,roger:1}, d: {reb:3} },
+      { t: "找到你的人，然后一起面对一切", s: {mimi:2,constanze:2,renal:2,maria:2,eliza:2,cosette:2,marius:2}, d: {sel:2,emo:1} },
+      { t: "完成了你必须做的事，然后放下", s: {washington:3,valjean:2,angelica:2,judas:2,jesus:2,enjolras:1}, d: {ide:2,amb:1} },
+      { t: "真正看清自己是谁，然后接受它", s: {evan:3,zoe:2,parr:2,grantaire:2,marym:2,tevye:2,burr:1}, d: {ide:3} }
+    ]
+  }
+];
+
+// ═══════════════════════════════════════════════════
+// QUIZ STATE
+// ═══════════════════════════════════════════════════
+let currentQ = 0;
+let scores = {};
+let dims = {ext:0,ide:0,emo:0,reb:0,amb:0,sel:0};
+let dimMax = {ext:0,ide:0,emo:0,reb:0,amb:0,sel:0};
+let selectedOption = null;
+let selections = []; // selections[i] = chosen option index for question i
+const DIM_KEYS = ['ext','ide','emo','reb','amb','sel'];
+
+function initScores() {
+  scores = {};
+  Object.keys(characters).forEach(k => scores[k] = 0);
+  dims = {ext:0,ide:0,emo:0,reb:0,amb:0,sel:0};
+  selections = [];
+}
+
+function computeDimMax() {
+  dimMax = {ext:0,ide:0,emo:0,reb:0,amb:0,sel:0};
+  questions.forEach(q => {
+    const best = {ext:0,ide:0,emo:0,reb:0,amb:0,sel:0};
+    q.opts.forEach(o => {
+      if (!o.d) return;
+      DIM_KEYS.forEach(k => { if ((o.d[k]||0) > best[k]) best[k] = o.d[k]; });
+    });
+    DIM_KEYS.forEach(k => dimMax[k] += best[k]);
+  });
+}
+
+// ─── STARS ───
+function generateStars() {
+  const container = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    const size = Math.random() * 2.5 + 0.5;
+    star.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${2+Math.random()*4}s;animation-delay:${Math.random()*4}s;`;
+    container.appendChild(star);
+  }
+}
+
+// ─── SCREEN ───
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ─── START ───
+function startQuiz() {
+  initScores();
+  currentQ = 0;
+  document.getElementById('qTotal').textContent = questions.length;
+  document.getElementById('curtainL').classList.add('open');
+  document.getElementById('curtainR').classList.add('open');
+  document.getElementById('curtainFringe').classList.add('hidden');
+  setTimeout(() => { showScreen('quiz'); renderQuestion(); }, 800);
+}
+
+// ─── RENDER QUESTION ───
+function renderQuestion() {
+  const q = questions[currentQ];
+  selectedOption = null;
+
+  document.getElementById('qNum').textContent = currentQ + 1;
+  const pct = Math.round((currentQ / questions.length) * 100);
+  document.getElementById('progressPct').textContent = pct;
+  document.getElementById('progressFill').style.width = pct + '%';
+
+  const acts = ['一','二','三','四','五','六','七','八','九','十',
+                 '十一','十二','十三','十四','十五','十六','十七','十八','十九','二十',
+                 '二十一','二十二','二十三','二十四','二十五'];
+  document.getElementById('qNumber').textContent = `幕 · ${acts[currentQ] || (currentQ+1)}`;
+  document.getElementById('qText').textContent = q.q;
+
+  const letters = ['A','B','C','D'];
+  const container = document.getElementById('optionsContainer');
+  container.innerHTML = '';
+  const btns = [];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span class="option-text">${opt.t}</span>`;
+    btn.onclick = () => selectOption(btn, i);
+    container.appendChild(btn);
+    btns.push(btn);
+  });
+
+  // Restore previous selection for this question
+  const prevSel = selections[currentQ];
+  if (prevSel !== undefined && prevSel !== null) {
+    selectedOption = prevSel;
+    btns[prevSel].classList.add('selected');
+  } else {
+    selectedOption = null;
+  }
+
+  const btnNext = document.getElementById('btnNext');
+  btnNext.classList.toggle('visible', selectedOption !== null);
+  btnNext.textContent = currentQ === questions.length - 1 ? '揭晓结果 ✦' : '下一幕 →';
+
+  const btnPrev = document.getElementById('btnPrev');
+  btnPrev.classList.toggle('visible', currentQ > 0);
+
+  const card = document.getElementById('questionCard');
+  card.style.animation = 'none';
+  card.offsetHeight;
+  card.style.animation = 'slideIn 0.5s ease';
+}
+
+// ─── SELECT OPTION ───
+function selectOption(btn, index) {
+  const q = questions[currentQ];
+  // Remove previous selection's scores
+  if (selectedOption !== null) {
+    const prev = q.opts[selectedOption];
+    Object.entries(prev.s).forEach(([c,p]) => { if (scores[c]!==undefined) scores[c]-=p; });
+    if (prev.d) DIM_KEYS.forEach(k => { dims[k] -= (prev.d[k]||0); });
+  }
+  document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedOption = index;
+  const cur = q.opts[index];
+  Object.entries(cur.s).forEach(([c,p]) => { if (scores[c]!==undefined) scores[c]+=p; });
+  if (cur.d) DIM_KEYS.forEach(k => { dims[k] += (cur.d[k]||0); });
+  selections[currentQ] = index;
+  document.getElementById('btnNext').classList.add('visible');
+}
+
+// ─── NEXT QUESTION ───
+function nextQuestion() {
+  if (selectedOption === null) return;
+  currentQ++;
+  if (currentQ >= questions.length) {
+    showResult();
+  } else {
+    // If going to a previously-answered question (was subtracted when backing up), re-add its scores
+    const prevSel = selections[currentQ];
+    if (prevSel !== undefined && prevSel !== null) {
+      const opt = questions[currentQ].opts[prevSel];
+      Object.entries(opt.s).forEach(([c,p]) => { if (scores[c]!==undefined) scores[c]+=p; });
+      if (opt.d) DIM_KEYS.forEach(k => { dims[k] += (opt.d[k]||0); });
+    }
+    renderQuestion();
+  }
+}
+
+// ─── PREV QUESTION ───
+function prevQuestion() {
+  if (currentQ === 0) return;
+  // Subtract current question's scores before going back
+  if (selectedOption !== null) {
+    const opt = questions[currentQ].opts[selectedOption];
+    Object.entries(opt.s).forEach(([c,p]) => { if (scores[c]!==undefined) scores[c]-=p; });
+    if (opt.d) DIM_KEYS.forEach(k => { dims[k] -= (opt.d[k]||0); });
+  }
+  currentQ--;
+  renderQuestion();
+}
+
+// ─── SHOW RESULT ───
+function showResult() {
+  showScreen('loading');
+  setTimeout(() => {
+    const winner = Object.entries(scores).sort((a,b) => b[1]-a[1])[0][0];
+    const char = characters[winner];
+
+    // Calligraphy
+    document.getElementById('resCalliZH').textContent = char.name;
+    document.getElementById('resCalliEN').textContent = char.nameEN;
+    document.getElementById('resName').textContent = char.musical;
+    document.getElementById('resMusical').textContent = '';
+    document.getElementById('resSong').textContent = char.song;
+    document.getElementById('resSongCN').textContent = char.songCN;
+    document.getElementById('resDesc').textContent = char.desc;
+    document.getElementById('resQuote').textContent = char.quote;
+
+    const traitsEl = document.getElementById('resTraits');
+    traitsEl.innerHTML = char.traits.map(t => `<span class="trait-tag">${t}</span>`).join('');
+
+    document.getElementById('resultHeader').style.background = char.gradient;
+    document.getElementById('progressPct').textContent = '100';
+    document.getElementById('progressFill').style.width = '100%';
+
+    // Radar chart
+    const nd = getNormalizedDims();
+    document.getElementById('radarContainer').innerHTML = createRadarSVG(nd, 300);
+
+    window._resultChar = char;
+    window._normDims = nd;
+    showScreen('result');
+  }, 2500);
+}
+
+// ─── SHARE ───
+function shareResult() {
+  const char = window._resultChar;
+  if (!char) return;
+  const text = `🎭 音乐剧灵魂测试结果\n\n我是${char.musical}里的 ${char.name}！\n本命曲目：${char.song}（${char.songCN}）\n\n${char.quote}\n\n#音乐剧灵魂测试 #MusicalSoul`;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => showToast('已复制到剪贴板！分享给朋友吧 🎭'));
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast('已复制！');
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ─── RESTART ───
+function restartQuiz() {
+  closeShareModal();
+  document.getElementById('curtainL').classList.remove('open');
+  document.getElementById('curtainR').classList.remove('open');
+  document.getElementById('curtainFringe').classList.remove('hidden');
+  setTimeout(() => { initScores(); currentQ = 0; showScreen('intro'); }, 600);
+}
+
+// ─── COPY TEXT ───
+function copyShareText() {
+  const char = window._resultChar;
+  if (!char) return;
+  const text = `🎭 音乐剧灵魂测试结果\n\n我是${char.musical}里的 ${char.name}！\n本命曲目：${char.song}（${char.songCN}）\n\n${char.quote}\n\n#音乐剧灵魂测试 #MusicalSoul`;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => showToast('已复制！分享给朋友吧 🎭'));
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast('已复制！');
+  }
+}
+
+// ─── DIMENSION NORMALIZATION ───
+function getNormalizedDims() {
+  const r = {};
+  DIM_KEYS.forEach(k => {
+    r[k] = dimMax[k] > 0 ? Math.min(100, Math.round(dims[k] / dimMax[k] * 100)) : 20;
+  });
+  return r;
+}
+
+// ─── RADAR CHART SVG ───
+function createRadarSVG(nd, size) {
+  const G = '#d4af37', GL = '#f0d060', GD = 'rgba(212,175,55,0.18)', TC = 'rgba(240,232,208,0.82)';
+  const labels = ['外向力','理想度','情感力','反叛值','野心度','奉献心'];
+  const vals = DIM_KEYS.map(k => (nd[k]||0) / 100);
+  const pad = 36;
+  const n = 6, cx = size/2, cy = size/2, r = size*0.30, lr = r + size*0.155;
+  const step = Math.PI*2/n, start = -Math.PI/2;
+  const pt = (ratio, i) => {
+    const a = start + i*step;
+    return [cx + r*ratio*Math.cos(a), cy + r*ratio*Math.sin(a)];
+  };
+  const grids = [.2,.4,.6,.8,1].map(ratio => {
+    const p = Array.from({length:n},(_,i) => pt(ratio,i).map(v=>v.toFixed(1)).join(',')).join(' ');
+    return `<polygon points="${p}" fill="none" stroke="${GD}" stroke-width="1"/>`;
+  }).join('');
+  const axes = Array.from({length:n},(_,i) => {
+    const [x,y] = pt(1,i);
+    return `<line x1="${cx.toFixed(1)}" y1="${cy.toFixed(1)}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="${GD}" stroke-width="1"/>`;
+  }).join('');
+  const dataPts = vals.map((v,i) => pt(v,i).map(x=>x.toFixed(1)).join(',')).join(' ');
+  const dots = vals.map((v,i) => {
+    const [x,y] = pt(v,i);
+    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.5" fill="${G}" opacity="0.9"/>`;
+  }).join('');
+  const fs = size > 240 ? 12 : 10;
+  const lbls = labels.map((lbl,i) => {
+    const a = start+i*step;
+    const lx = cx+lr*Math.cos(a), ly = cy+lr*Math.sin(a);
+    const score = Math.round(vals[i]*100);
+    const anchor = lx < cx-8 ? 'end' : lx > cx+8 ? 'start' : 'middle';
+    return `<text x="${lx.toFixed(1)}" y="${(ly-6).toFixed(1)}" text-anchor="${anchor}" style="font-family:Noto Serif SC,serif;font-size:${fs}px;fill:${TC};">${lbl}</text>
+<text x="${lx.toFixed(1)}" y="${(ly+9).toFixed(1)}" text-anchor="${anchor}" style="font-family:Playfair Display,serif;font-size:${fs+1}px;font-style:italic;fill:${G};">${score}</text>`;
+  }).join('');
+  return `<svg viewBox="${-pad} ${-pad} ${size+pad*2} ${size+pad*2}" width="${size+pad}" height="${size+pad}" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+<defs><radialGradient id="rbg${size}"><stop offset="0%" stop-color="rgba(212,175,55,0.06)"/><stop offset="100%" stop-color="rgba(8,8,15,0.4)"/></radialGradient>
+<linearGradient id="rfill${size}" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="rgba(212,175,55,0.28)"/><stop offset="100%" stop-color="rgba(139,0,0,0.22)"/></linearGradient></defs>
+<circle cx="${cx}" cy="${cy}" r="${(r*1.05).toFixed(1)}" fill="url(#rbg${size})"/>
+${grids}${axes}
+<polygon points="${dataPts}" fill="url(#rfill${size})" stroke="${G}" stroke-width="1.8" stroke-opacity="0.85"/>
+${dots}${lbls}</svg>`;
+}
+
+// ─── SHARE MODAL ───
+function openShareModal() {
+  const char = window._resultChar, nd = window._normDims;
+  if (!char) return;
+  document.getElementById('shareCardInner').innerHTML = buildShareCard(char, nd);
+  document.getElementById('shareModal').classList.add('visible');
+  // Generate QR
+  setTimeout(() => {
+    const ph = document.getElementById('qrTarget');
+    if (!ph || typeof QRCode === 'undefined') return;
+    ph.innerHTML = '';
+    new QRCode(ph, {text:'音乐剧灵魂测试 MusicalSoul · '+char.name+' · '+char.song, width:80, height:80, colorDark:'#d4af37', colorLight:'#08080f'});
+  }, 200);
+}
+
+function closeShareModal() {
+  document.getElementById('shareModal').classList.remove('visible');
+}
+
+function buildShareCard(char, nd) {
+  const radarSVG = createRadarSVG(nd, 190);
+  const dimInfo = [{k:'ext',l:'外向力'},{k:'ide',l:'理想度'},{k:'emo',l:'情感力'},{k:'reb',l:'反叛值'},{k:'amb',l:'野心度'},{k:'sel',l:'奉献心'}];
+  const bars = dimInfo.map(({k,l}) => {
+    const v = nd[k]||0;
+    return `<div style="display:flex;align-items:center;gap:5px;margin:3.5px 0;">
+<div style="width:38px;font-size:10px;color:#9a8870;text-align:right;font-family:Noto Serif SC,serif;">${l}</div>
+<div style="flex:1;height:3px;background:rgba(212,175,55,0.1);border-radius:2px;"><div style="width:${v}%;height:100%;background:linear-gradient(to right,#8b0000,#d4af37);border-radius:2px;"></div></div>
+<div style="width:24px;font-size:10px;color:#d4af37;font-family:Playfair Display,serif;">${Math.round(v)}</div></div>`;
+  }).join('');
+  const traits = char.traits.map(t => `<span style="display:inline-block;margin:2px 3px;padding:2px 8px;background:rgba(212,175,55,0.08);border:1px solid rgba(212,175,55,0.22);color:#f0d060;border-radius:10px;font-size:10px;font-family:Noto Serif SC,serif;">${t}</span>`).join('');
+  return `<div style="width:430px;background:#08080f;font-family:Noto Serif SC,serif;color:#f0e8d0;">
+<div style="padding:26px 22px 18px;text-align:center;background:${char.gradient};position:relative;">
+<div style="position:absolute;inset:0;background:rgba(8,8,15,0.52);"></div>
+<div style="position:relative;z-index:1;">
+<div style="font-family:Cormorant Garamond,serif;font-size:9px;letter-spacing:5px;color:rgba(212,175,55,0.65);text-transform:uppercase;margin-bottom:12px;">音乐剧灵魂测试 · Musical Soul</div>
+<div style="font-family:Ma Shan Zheng,cursive;font-size:50px;color:#d4af37;text-shadow:0 0 25px rgba(212,175,55,0.45);line-height:1.2;">${char.name}</div>
+<div style="font-family:Great Vibes,cursive;font-size:20px;color:rgba(212,175,55,0.55);margin-top:-3px;">${char.nameEN}</div>
+<div style="font-family:Cormorant Garamond,serif;font-size:12px;font-style:italic;color:#c8b89a;margin-top:7px;">${char.musical}</div>
+</div></div>
+<div style="display:flex;gap:10px;padding:14px 18px 6px;align-items:center;">
+${radarSVG}<div style="flex:1;">${bars}</div></div>
+<div style="margin:4px 18px 0;padding:9px 13px;background:rgba(212,175,55,0.05);border:1px solid rgba(212,175,55,0.16);border-radius:5px;">
+<div style="font-size:8px;letter-spacing:3px;color:#9a8870;text-transform:uppercase;font-family:Cormorant Garamond,serif;">本命曲目 · Signature Song</div>
+<div style="font-family:Playfair Display,serif;font-size:15px;font-style:italic;color:#f0d060;margin-top:2px;">${char.song}</div>
+<div style="font-size:10px;color:#9a8870;margin-top:1px;">${char.songCN}</div></div>
+<div style="margin:11px 18px;font-family:Cormorant Garamond,serif;font-size:12px;font-style:italic;color:rgba(212,175,55,0.72);border-left:3px solid #d4af37;padding-left:11px;line-height:1.8;">${char.quote}</div>
+<div style="padding:0 15px 12px;">${traits}</div>
+<div style="padding:10px 18px;border-top:1px solid rgba(212,175,55,0.1);display:flex;align-items:center;justify-content:space-between;">
+<div><div style="font-family:Playfair Display,serif;font-size:12px;font-style:italic;color:#d4af37;">Musical Soul</div>
+<div style="font-size:9px;color:#444;margin-top:1px;">扫码参与音乐剧灵魂测试</div></div>
+<div id="qrTarget" style="width:80px;height:80px;display:flex;align-items:center;justify-content:center;"></div>
+</div></div>`;
+}
+
+async function downloadShareImage() {
+  if (typeof html2canvas === 'undefined') { showToast('请联网后重试'); return; }
+  const btn = document.getElementById('btnDownload');
+  btn.textContent = '生成中…'; btn.disabled = true;
+  try {
+    await document.fonts.ready;
+    const el = document.getElementById('shareCardInner');
+    const canvas = await html2canvas(el, {scale:2, backgroundColor:'#08080f', useCORS:true, logging:false});
+    const a = document.createElement('a');
+    a.download = 'musical-soul-' + (window._resultChar.nameEN||'result').replace(/\s+/g,'-').toLowerCase() + '.png';
+    a.href = canvas.toDataURL('image/png',1.0); a.click();
+    showToast('下载成功！');
+  } catch(e) { showToast('下载失败，请右键另存为'); }
+  btn.textContent = '⬇ 下载长图'; btn.disabled = false;
+}
+
+// ─── INIT ───
+computeDimMax();
+generateStars();
+</script>
+</body>
+</html>
