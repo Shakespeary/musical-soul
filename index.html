@@ -256,6 +256,11 @@ body::before {
   color: var(--gold); opacity: 0.8; border-left: 3px solid var(--gold);
   padding-left: 1rem; margin-bottom: 2rem; line-height: 1.7;
 }
+.quote-orig {
+  display: block; margin-top: 0.5rem;
+  font-family: 'Cormorant Garamond', serif; font-size: 0.88rem; font-style: italic;
+  color: rgba(212,175,55,0.5); letter-spacing: 0.02em;
+}
 .traits-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 2rem; }
 .trait-tag {
   background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.3);
@@ -966,6 +971,61 @@ const characters = {
   }
 };
 
+// ─── ORIGINAL LANGUAGE QUOTES ───
+{
+  const q = {
+    elphaba:   "\"I'm through accepting limits / 'Cause someone says they're so.\" — Defying Gravity",
+    glinda:    "\"Ev'ryone deserves the chance to fly!\" — For Good",
+    christine: "\"Think of me, think of me fondly, when we've said goodbye.\" — Think of Me",
+    phantom:   "\"Let your mind start a journey through a strange new world, leave all thoughts of the world you knew before.\" — Music of the Night",
+    hamilton:  "\"I am not throwing away my shot!\" — My Shot",
+    burr:      "\"Talk less, smile more. Don't let them know what you're against or what you're for.\" — Aaron Burr, Sir",
+    eliza:     "\"Look around, look around at how lucky we are to be alive right now.\" — The Schuyler Sisters",
+    angelica:  "\"I will never be satisfied.\" — Satisfied",
+    george3:   "\"You'll be back, soon you'll see, you'll remember you belong to me.\" — You'll Be Back",
+    washington:"\"Dying is easy, young man. Living is harder.\" — Right Hand Man",
+    lafayette: "\"Immigrants — we get the job done!\" — Yorktown",
+    eponine:   "\"On my own, pretending he's beside me.\" — On My Own",
+    valjean:   "\"To love another person is to see the face of God.\" — Finale",
+    javert:    "\"Stars! In your multitudes, scarce to be counted, filling the darkness with order and light.\" — Stars",
+    enjolras:  "\"Do you hear the people sing? Singing the song of angry men?\" — Do You Hear the People Sing?",
+    grantaire: "\"Drink with me to days gone by / Sing with me the songs we knew.\" — Drink with Me",
+    marius:    "\"There's a grief that can't be spoken, there's a pain goes on and on.\" — Empty Chairs at Empty Tables",
+    cosette:   "\"There is a castle on a cloud / I like to go there in my sleep.\" — Castle on a Cloud",
+    thenardier:"\"Master of the house, doling out the charm, ready with a handshake and an open palm.\" — Master of the House",
+    evan:      "\"Have you ever felt like nobody was there? Have you ever felt forgotten in the middle of nowhere?\" — Waving Through a Window",
+    zoe:       "\"Why should I play this game of pretend? Remembering through a secondhand sorrow.\" — Requiem",
+    emcee:     "\"Willkommen, bienvenue, welcome! Come to the cabaret!\" — Willkommen",
+    sally:     "\"Maybe this time I'll be lucky / Maybe this time he'll stay.\" — Maybe This Time",
+    sweeney:   "\"They all deserve to die! Tell you why, Mrs. Lovett, tell you why.\" — Epiphany",
+    lovett:    "\"The worst pies in London — even that's polite.\" — The Worst Pies in London",
+    roxie:     "\"I'm gonna be a celebrity / That means somebody everyone knows.\" — Roxie",
+    velma:     "\"And all that jazz!\" — All That Jazz",
+    elle:      "\"So much better, doing what we do, it's so much better!\" — So Much Better",
+    mimi:      "\"I gotta go out tonight / Out tonight!\" — Out Tonight",
+    roger:     "\"One blaze of glory / One blaze of glory.\" — One Song Glory",
+    dolly:     "\"Before the parade passes by / I'm gonna go and taste Saturday's high life.\" — Before the Parade Passes By",
+    tevye:     "\"If I were a rich man — ya ha deedle deedle, bubba bubba deedle deedle dum.\" — If I Were a Rich Man",
+    maria:     "\"The hills are alive with the sound of music.\" — The Sound of Music",
+    judas:     "\"My mind is clearer now / At last all too well I can see where we all soon will be.\" — Heaven on Their Minds",
+    jesus:     "\"I only want to say — if there is a way / Take this cup away from me.\" — Gethsemane",
+    marym:     "\"I don't know how to love him / What to do, how to move him.\" — I Don't Know How to Love Him",
+    mozart:    "\"Tatoue-moi, pas sous la peau, dans l'âme.\" — Tatoue-moi",
+    salieri:   "\"Le bien qui fait mal — une blessure sans fin.\" — Le bien qui fait mal",
+    constanze: "\"Vivre à en crever, mourir d'avoir trop aimé.\" — Vivre à en crever",
+    julien:    "\"Je suis né pour un autre destin, que ces plaines sans fin.\" — Je suis né pour un autre destin",
+    mathilde:  "\"Le rouge et le noir — deux couleurs qui me déchirent.\" — Le rouge et le noir",
+    renal:     "\"Une vie pour rien, jusqu'à ce que tu viennes.\" — Une vie pour rien",
+    aragon:    "\"No way! I won't, I won't, I won't let go.\" — No Way",
+    boleyn:    "\"Don't lose your head, don't lose your head, no!\" — Don't Lose Ur Head",
+    seymour:   "\"I have a heart of stone / To keep myself from breaking down.\" — Heart of Stone",
+    cleves:    "\"Get down! We're gonna get down tonight!\" — Get Down",
+    howard:    "\"All you wanna do / Is use me up.\" — All You Wanna Do",
+    parr:      "\"I don't need your love / I don't need your love.\" — I Don't Need Your Love"
+  };
+  Object.entries(q).forEach(([k,v]) => { if (characters[k]) characters[k].quoteOrig = v; });
+}
+
 // ═══════════════════════════════════════════════════
 // QUESTIONS — 25 questions
 // ═══════════════════════════════════════════════════
@@ -1361,7 +1421,17 @@ function prevQuestion() {
 function showResult() {
   showScreen('loading');
   setTimeout(() => {
-    const winner = Object.entries(scores).sort((a,b) => b[1]-a[1])[0][0];
+    // Normalize by max possible score so characters appearing in fewer questions aren't penalized
+    const maxPoss = {};
+    Object.keys(characters).forEach(k => maxPoss[k] = 0);
+    questions.forEach(q => {
+      const qBest = {};
+      q.opts.forEach(o => { Object.entries(o.s).forEach(([c,p]) => { qBest[c] = Math.max(qBest[c]||0, p); }); });
+      Object.entries(qBest).forEach(([c,p]) => { if (maxPoss[c]!==undefined) maxPoss[c]+=p; });
+    });
+    const winner = Object.entries(scores)
+      .filter(([c]) => maxPoss[c] > 0)
+      .sort((a,b) => (b[1]/maxPoss[b[0]]) - (a[1]/maxPoss[a[0]]))[0][0];
     const char = characters[winner];
 
     // Calligraphy
@@ -1372,7 +1442,8 @@ function showResult() {
     document.getElementById('resSong').textContent = char.song;
     document.getElementById('resSongCN').textContent = char.songCN;
     document.getElementById('resDesc').textContent = char.desc;
-    document.getElementById('resQuote').textContent = char.quote;
+    document.getElementById('resQuote').innerHTML =
+      char.quote + (char.quoteOrig ? `<em class="quote-orig">${char.quoteOrig}</em>` : '');
 
     const traitsEl = document.getElementById('resTraits');
     traitsEl.innerHTML = char.traits.map(t => `<span class="trait-tag">${t}</span>`).join('');
@@ -1499,7 +1570,7 @@ function openShareModal() {
     const ph = document.getElementById('qrTarget');
     if (!ph || typeof QRCode === 'undefined') return;
     ph.innerHTML = '';
-    new QRCode(ph, {text:'音乐剧灵魂测试 MusicalSoul · '+char.name+' · '+char.song, width:80, height:80, colorDark:'#d4af37', colorLight:'#08080f'});
+    new QRCode(ph, {text:'https://shakespeary.github.io/musical-soul/', width:80, height:80, colorDark:'#d4af37', colorLight:'#08080f'});
   }, 200);
 }
 
@@ -1533,7 +1604,7 @@ ${radarSVG}<div style="flex:1;">${bars}</div></div>
 <div style="font-size:8px;letter-spacing:3px;color:#9a8870;text-transform:uppercase;font-family:Cormorant Garamond,serif;">本命曲目 · Signature Song</div>
 <div style="font-family:Playfair Display,serif;font-size:15px;font-style:italic;color:#f0d060;margin-top:2px;">${char.song}</div>
 <div style="font-size:10px;color:#9a8870;margin-top:1px;">${char.songCN}</div></div>
-<div style="margin:11px 18px;font-family:Cormorant Garamond,serif;font-size:12px;font-style:italic;color:rgba(212,175,55,0.72);border-left:3px solid #d4af37;padding-left:11px;line-height:1.8;">${char.quote}</div>
+<div style="margin:11px 18px;font-family:Cormorant Garamond,serif;font-size:12px;font-style:italic;color:rgba(212,175,55,0.72);border-left:3px solid #d4af37;padding-left:11px;line-height:1.8;">${char.quote}${char.quoteOrig ? `<br><span style="font-size:10px;color:rgba(212,175,55,0.45);display:block;margin-top:3px;">${char.quoteOrig}</span>` : ''}</div>
 <div style="padding:0 15px 12px;">${traits}</div>
 <div style="padding:10px 18px;border-top:1px solid rgba(212,175,55,0.1);display:flex;align-items:center;justify-content:space-between;">
 <div><div style="font-family:Playfair Display,serif;font-size:12px;font-style:italic;color:#d4af37;">Musical Soul</div>
